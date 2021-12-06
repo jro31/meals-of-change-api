@@ -10,12 +10,11 @@ module Api
         if user
           session[:user_id] = user.id # This creates a cookie...
           render json: {
-            status: :created,
             logged_in: true,
             user: user
-          }
+          }, status: :created
         else
-          render json: { status: 401 }
+          render json: { error_message: 'Unable to find user' }, status: :unauthorized
         end
       end
 
@@ -24,17 +23,17 @@ module Api
           render json: {
             logged_in: true,
             user: @current_user
-          }
+          }, status: :ok
         else
           render json: {
             logged_in: false
-          }
+          }, status: :ok
         end
       end
 
       def logout
         reset_session
-        render json: { status: 200, logged_out: true }
+        render json: { logged_out: true }, status: :ok
       end
     end
   end
