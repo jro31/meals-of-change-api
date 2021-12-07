@@ -3,11 +3,9 @@ module Api
     class RegistrationsController < ApplicationController
       def create
         begin
-          user = User.create!(
-            email: params['user']['email'],
-            password: params['user']['password'],
-            password_confirmation: params['user']['password_confirmation']
-          )
+          raise 'Password confirmation not included' unless params['user']['password_confirmation']
+
+          user = User.create!(user_params)
 
           session[:user_id] = user.id
           render json: {
@@ -23,6 +21,12 @@ module Api
             error_message: e.message
           }, status: :unprocessable_entity
         end
+      end
+
+      private
+
+      def user_params
+        params.require(:user).permit(:email, :password, :password_confirmation)
       end
     end
   end
