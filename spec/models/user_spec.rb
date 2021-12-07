@@ -37,6 +37,52 @@ describe User, type: :model do
           end
         end
       end
+
+      describe 'validates format of email' do
+        context 'email is valid' do
+          it { expect(subject).to be_valid }
+        end
+
+        context 'email doesn\'t contain @' do
+          let(:email) { 'testemail.com' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:email]).to include('is invalid')
+          end
+        end
+
+        context 'email contains space' do
+          let(:email) { 'te st@email.com' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:email]).to include('is invalid')
+          end
+        end
+
+        context 'email doesn\'t contain anything after .' do
+          let(:email) { 'testemail.' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:email]).to include('is invalid')
+          end
+        end
+
+        context 'email doesn\'t contain anything before @' do
+          let(:email) { '@email.com' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:email]).to include('is invalid')
+          end
+        end
+
+        context 'email doesn\'t contain anything between @ and .' do
+          let(:email) { 'test@.com' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:email]).to include('is invalid')
+          end
+        end
+      end
     end
 
     describe 'password' do
