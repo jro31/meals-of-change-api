@@ -116,5 +116,67 @@ describe User, type: :model do
         end
       end
     end
+
+    describe 'display_name' do
+      let(:display_name) { 'DisplayName' }
+      subject { build(:user, display_name: display_name) }
+      describe 'validates presence of display_name' do
+        context 'display_name is present' do
+          it { expect(subject).to be_valid }
+        end
+
+        context 'display_name is not present' do
+          let(:display_name) { nil }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:display_name]).to include('can\'t be blank')
+          end
+        end
+      end
+
+      describe 'validates uniqueness of display_name' do
+        let!(:other_user) { create(:user, display_name: other_user_display_name) }
+        context 'display_name is unique' do
+          let(:other_user_display_name) { 'a-unique-name' }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'display_name is not unique' do
+          let(:other_user_display_name) { display_name }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:display_name]).to include('has already been taken')
+          end
+        end
+      end
+
+      describe 'validates length of display_name' do
+        context 'display_name is three characters' do
+          let(:display_name) { 'abc' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:display_name]).to include('is too short (minimum is 4 characters)')
+          end
+        end
+
+        context 'display_name is four characters' do
+          let(:display_name) { 'abcd' }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'display_name is twenty characters' do
+          let(:display_name) { 'abcdefghijklmnopqrst' }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'display_name is twenty-one characters' do
+          let(:display_name) { 'abcdefghijklmnopqrstu' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:display_name]).to include('is too long (maximum is 20 characters)')
+          end
+        end
+      end
+    end
   end
 end
