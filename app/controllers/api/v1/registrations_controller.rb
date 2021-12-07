@@ -1,6 +1,8 @@
 module Api
   module V1
-    class RegistrationsController < ApplicationController
+    class RegistrationsController < Api::V1::BaseController
+      skip_after_action :verify_authorized
+
       def create
         begin
           raise 'Password confirmation not included' unless params['user']['password_confirmation']
