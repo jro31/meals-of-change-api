@@ -4,17 +4,19 @@ module Api
       include CurrentUserConcern
 
       def create
-        user = User.find_by(email: params['user']['email'])
-                  .try(:authenticate, params['user']['password']) # This 'authenticate' method comes from having a 'password_digest' field and having 'has_secure_password' on 'User'
+        begin
+          user = User.find_by(email: params['user']['email'])
+                     .try(:authenticate, params['user']['password'])
 
-        if user
+          raise 'Incorrect username/password' unless user
+
           session[:user_id] = user.id # This creates a cookie...
           render json: {
             logged_in: true,
             user: UserRepresenter.new(user).as_json
           }, status: :created
-        else
-          render json: { error_message: 'Unable to find user' }, status: :unauthorized
+        rescue => e
+          render json: { error_message: e.message }, status: :unauthorized
         end
       end
 
