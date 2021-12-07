@@ -11,7 +11,7 @@ module Api
           session[:user_id] = user.id # This creates a cookie...
           render json: {
             logged_in: true,
-            user: user
+            user: UserRepresenter.new(user).as_json
           }, status: :created
         else
           render json: { error_message: 'Unable to find user' }, status: :unauthorized
@@ -22,7 +22,7 @@ module Api
         if @current_user
           render json: {
             logged_in: true,
-            user: @current_user
+            user: UserRepresenter.new(@current_user).as_json
           }, status: :ok
         else
           render json: {

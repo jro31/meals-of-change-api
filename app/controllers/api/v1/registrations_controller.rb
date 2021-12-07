@@ -12,7 +12,7 @@ module Api
           session[:user_id] = user.id
           render json: {
             logged_in: true,
-            user: user
+            user: UserRepresenter.new(user).as_json
           }, status: :created
         rescue ActiveRecord::RecordInvalid => e
           render json: {
