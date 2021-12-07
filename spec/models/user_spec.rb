@@ -86,10 +86,10 @@ describe User, type: :model do
     end
 
     describe 'password' do
+      let(:password) { 'password' }
       subject { build(:user, password: password) }
       describe 'validates presence of password' do
         context 'password is present' do
-          let(:password) { 'password' }
           it { expect(subject).to be_valid }
         end
 
@@ -99,6 +99,20 @@ describe User, type: :model do
             expect(subject).not_to be_valid
             expect(subject.errors.messages[:password]).to include('can\'t be blank')
           end
+        end
+      end
+
+      describe 'validates length of password' do
+        context 'password is 7 characters' do
+          let(:password) { 'passwor' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:password]).to include('is too short (minimum is 8 characters)')
+          end
+        end
+
+        context 'password is 8 characters' do
+          it { expect(subject).to be_valid }
         end
       end
     end
