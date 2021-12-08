@@ -8,6 +8,10 @@ describe User, type: :model do
     describe 'has many recipes' do
       let!(:recipe) { create(:recipe, user: subject) }
       it { expect(subject.recipes.first).to eq(recipe) }
+
+      describe 'dependent destroy' do
+        it { expect { subject.destroy }.to change { Recipe.count }.by(-1) }
+      end
     end
   end
 
