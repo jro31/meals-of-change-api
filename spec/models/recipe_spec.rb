@@ -36,6 +36,18 @@ describe Recipe, type: :model do
         it { expect { subject.destroy }.to change { Step.count }.by(-1) }
       end
     end
+
+    describe 'has many recipe tags' do
+      # COMPLETE THIS
+
+      describe 'dependent destroy' do
+        # COMPLETE THIS
+      end
+    end
+
+    describe 'has many tags' do
+      # COMPLETE THIS
+    end
   end
 
   describe 'validations' do

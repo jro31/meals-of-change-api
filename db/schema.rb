@@ -26,6 +26,15 @@ ActiveRecord::Schema.define(version: 2021_12_08_160340) do
     t.index ["recipe_id"], name: "index_ingredients_on_recipe_id"
   end
 
+  create_table "recipe_tags", force: :cascade do |t|
+    t.bigint "recipe_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["recipe_id"], name: "index_recipe_tags_on_recipe_id"
+    t.index ["tag_id"], name: "index_recipe_tags_on_tag_id"
+  end
+
   create_table "recipes", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "name"
@@ -34,15 +43,6 @@ ActiveRecord::Schema.define(version: 2021_12_08_160340) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_recipes_on_user_id"
-  end
-
-  create_table "recipes_tags", force: :cascade do |t|
-    t.bigint "recipe_id", null: false
-    t.bigint "tag_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["recipe_id"], name: "index_recipes_tags_on_recipe_id"
-    t.index ["tag_id"], name: "index_recipes_tags_on_tag_id"
   end
 
   create_table "steps", force: :cascade do |t|
@@ -69,8 +69,8 @@ ActiveRecord::Schema.define(version: 2021_12_08_160340) do
   end
 
   add_foreign_key "ingredients", "recipes"
+  add_foreign_key "recipe_tags", "recipes"
+  add_foreign_key "recipe_tags", "tags"
   add_foreign_key "recipes", "users"
-  add_foreign_key "recipes_tags", "recipes"
-  add_foreign_key "recipes_tags", "tags"
   add_foreign_key "steps", "recipes"
 end

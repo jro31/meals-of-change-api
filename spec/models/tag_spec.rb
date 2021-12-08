@@ -4,6 +4,20 @@ describe Tag, type: :model do
   subject { create(:tag) }
   it { expect(subject).to be_valid }
 
+  describe 'associations' do
+    describe 'has many recipe tags' do
+      # COMPLETE THIS
+
+      describe 'dependent destroy' do
+        # COMPLETE THIS
+      end
+    end
+
+    describe 'has many recipes' do
+      # COMPLETE THIS
+    end
+  end
+
   describe 'validations' do
     describe 'name' do
       let(:name) { 'Thai food' }
