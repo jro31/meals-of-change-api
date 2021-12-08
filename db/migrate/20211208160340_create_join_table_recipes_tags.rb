@@ -1,8 +1,10 @@
 class CreateJoinTableRecipesTags < ActiveRecord::Migration[6.0]
   def change
-    create_join_table :recipes, :tags do |t|
-      t.index [:recipe_id, :tag_id]
-      t.index [:tag_id, :recipe_id]
+    create_table :recipes_tags do |t|
+      t.references :recipe, null: false, foreign_key: true
+      t.references :tag, null: false, foreign_key: true
+
+      t.timestamps
     end
   end
 end
