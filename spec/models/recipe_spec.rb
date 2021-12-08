@@ -19,6 +19,15 @@ describe Recipe, type: :model do
         it { expect { subject.destroy }.to change { Ingredient.count }.by(-1) }
       end
     end
+
+    describe 'has many steps' do
+      let!(:step) { create(:step, recipe: subject) }
+      it { expect(subject.steps.first).to eq(step) }
+
+      describe 'dependent destroy' do
+        it { expect { subject.destroy }.to change { Step.count }.by(-1) }
+      end
+    end
   end
 
   describe 'validations' do
