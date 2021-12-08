@@ -16,11 +16,8 @@ describe Ingredient, type: :model do
     describe 'food' do
       let(:food) { 'Garlic' }
       subject { build(:ingredient, food: food) }
+      it { expect(subject).to be_valid }
       describe 'validates presence of food' do
-        context 'food is present' do
-          it { expect(subject).to be_valid }
-        end
-
         context 'food is not present' do
           let(:food) { nil }
           it 'is invalid with the correct error' do
