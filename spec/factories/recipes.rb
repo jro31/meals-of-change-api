@@ -1,9 +1,8 @@
 FactoryBot.define do
   factory :recipe do
-    # COMPLETE THIS
-    # user { nil }
-    # name { "MyString" }
-    # time_minutes { 1 }
-    # preface { "MyString" }
+    user
+    name { 'My recipe name' }
+    time_minutes { 45 }
+    preface { 'I came up with this recipe while doing yoga on my head' }
   end
 end

@@ -1,3 +1,3 @@
 class Recipe < ApplicationRecord
-  belongs_to :user # SPEC THIS
+  belongs_to :user
 end

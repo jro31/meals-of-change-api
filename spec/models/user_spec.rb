@@ -4,6 +4,13 @@ describe User, type: :model do
   subject { create(:user) }
   it { expect(subject).to be_valid }
 
+  describe 'associations' do
+    describe 'has many recipes' do
+      let!(:recipe) { create(:recipe, user: subject) }
+      it { expect(subject.recipes.first).to eq(recipe) }
+    end
+  end
+
   describe 'validations' do
     describe 'email' do
       let(:email) { 'test@email.com' }
