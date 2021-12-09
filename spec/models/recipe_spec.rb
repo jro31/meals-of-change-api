@@ -29,7 +29,7 @@ describe Recipe, type: :model do
         let!(:step_4) { create(:step, recipe: subject, position: 5) }
         let!(:step) { create(:step, recipe: subject, position: 1) }
         let!(:step_2) { create(:step, recipe: subject, position: 2) }
-        it { expect(subject.steps).to eq([step, step_2, step_3, step_4]) }
+        xit { expect(subject.steps).to eq([step, step_2, step_3, step_4]) }
       end
 
       describe 'dependent destroy' do

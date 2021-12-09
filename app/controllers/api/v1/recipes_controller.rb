@@ -10,6 +10,8 @@ module Api
         # Must be filterable by tag,
         # search query (searching recipe name, ingredient food and tag name)
         # and user
+
+        # Don't return recipes that don't have at least one ingredient, and one step
       end
 
       # GET /api/v1/recipes/:id
@@ -31,10 +33,43 @@ module Api
 
       # POST /api/v1/recipes
       def create
-        # COMPLETE THIS
-
-        # Find or create tags - save as lower case
         # Throw error if tries to add more than 15 tags
+
+        @recipe = Recipe.new(recipe_params)
+        authorize @recipe
+
+        @recipe.user = current_user
+        find_or_create_tags
+
+        # binding.irb
+
+        # puts @recipe.ingredients.inspect
+        # puts @recipe.ingredients.first.recipe.inspect
+        # puts @recipe.steps.inspect
+        # puts @recipe.steps.first.recipe.inspect
+        # puts @recipe.save!
+
+        if @recipe.save
+          puts '🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈'
+        else
+          puts '🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉'
+        end
+      end
+
+      private
+
+      def recipe_params
+        params.require(:recipe).permit(:name, :time_minutes, :preface, ingredients_attributes: [
+          :amount, :food, :preparation, :optional
+        ], steps_attributes: [
+          :position, :instructions
+        ])
+      end
+
+      def find_or_create_tags
+        return unless params[:recipe][:tags].reject(&:blank?).any?
+
+        @recipe.tags << params[:recipe][:tags].map{ |tag_name| Tag.find_or_initialize_by(name: tag_name.downcase) }
       end
     end
   end

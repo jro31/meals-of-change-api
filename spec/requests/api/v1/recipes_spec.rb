@@ -68,12 +68,38 @@ describe 'recipes API', type: :request do
   end
 
   describe 'POST /api/v1/recipes' do
+    let(:name) { 'Beans on toast' }
+    let(:time_minutes) { 10 }
+    let(:preface) { 'My inspiration for this recipe comes from eating beans on toast' }
+    let(:toast) { { amount: '2 slices', food: 'bread', preparation: 'toasted', optional: false } }
+    let(:beans) { { amount: '1 can', food: 'baked beans', optional: true } }
+    let(:step_1) { { position: 1, instructions: 'Toast toast' } }
+    let(:step_2) { { position: 2, instructions: 'Cook beans' } }
+    let(:tags) { [] }
+    let(:url) { '/api/v1/recipes' }
+    let(:params) { { recipe: { name: name, time_minutes: time_minutes, preface: preface, ingredients_attributes: [toast, beans], steps_attributes: [step_1, step_2], tags: tags } } }
     context 'user is logged-in' do
       let(:email) { 'user@email.com' }
       let(:password) { 'password' }
       let!(:user) { create(:user, email: email, password: password) }
       before { post '/api/v1/sessions', params: { user: { email: email, password: password } } }
-      # COMPLETE THIS
+      context 'recipe has no tags' do
+        it 'creates a new recipe' do
+          expect { post url, params: params }.to change { Recipe.count }.by(1)
+        end
+      end
+
+      context 'recipe has only new tags' do
+        # COMPLETE THIS
+      end
+
+      context 'recipe has only existing tags' do
+        # COMPLETE THIS
+      end
+
+      context 'recipe has new and existing tags' do
+        # COMPLETE THIS
+      end
     end
 
     context 'user is not logged-in' do
