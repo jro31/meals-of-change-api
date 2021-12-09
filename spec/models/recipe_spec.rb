@@ -38,15 +38,18 @@ describe Recipe, type: :model do
     end
 
     describe 'has many recipe tags' do
-      # COMPLETE THIS
+      let!(:recipe_tag) { create(:recipe_tag, recipe: subject) }
+      it { expect(subject.recipe_tags.first).to eq(recipe_tag) }
 
       describe 'dependent destroy' do
-        # COMPLETE THIS
+        it { expect { subject.destroy }.to change { RecipeTag.count }.by(-1) }
       end
     end
 
     describe 'has many tags' do
-      # COMPLETE THIS
+      let(:tag) { create(:tag) }
+      let!(:recipe_tag) { create(:recipe_tag, recipe: subject, tag: tag) }
+      it { expect(subject.tags.first).to eq(tag) }
     end
   end
 

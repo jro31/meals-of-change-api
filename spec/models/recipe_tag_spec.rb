@@ -6,11 +6,15 @@ describe RecipeTag, type: :model do
 
   describe 'associations' do
     describe 'belongs to recipe' do
-      # COMPLETE THIS
+      let(:recipe) { create(:recipe) }
+      subject { create(:recipe_tag, recipe: recipe) }
+      it { expect(subject.recipe).to eq(recipe) }
     end
 
     describe 'belongs to tag' do
-      # COMPLETE THIS
+      let(:tag) { create(:tag) }
+      subject { create(:recipe_tag, tag: tag) }
+      it { expect(subject.tag).to eq(tag) }
     end
   end
 end

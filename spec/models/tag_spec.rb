@@ -6,15 +6,18 @@ describe Tag, type: :model do
 
   describe 'associations' do
     describe 'has many recipe tags' do
-      # COMPLETE THIS
+      let!(:recipe_tag) { create(:recipe_tag, tag: subject) }
+      it { expect(subject.recipe_tags.first).to eq(recipe_tag) }
 
       describe 'dependent destroy' do
-        # COMPLETE THIS
+        it { expect { subject.destroy }.to change { RecipeTag.count }.by(-1) }
       end
     end
 
     describe 'has many recipes' do
-      # COMPLETE THIS
+      let(:recipe) { create(:recipe) }
+      let!(:recipe_tag) { create(:recipe_tag, tag: subject, recipe: recipe) }
+      it { expect(subject.recipes.first).to eq(recipe) }
     end
   end
 
