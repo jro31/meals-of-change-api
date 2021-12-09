@@ -35,6 +35,10 @@ describe Tag, type: :model do
           end
         end
       end
+
+      describe 'validates uniqueness of name' do
+        # COMPLETE THIS
+      end
     end
   end
 end
