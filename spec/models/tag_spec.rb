@@ -37,7 +37,27 @@ describe Tag, type: :model do
       end
 
       describe 'validates uniqueness of name' do
-        # COMPLETE THIS
+        let!(:other_tag) { create(:tag, name: other_tag_name) }
+        context 'name is unique' do
+          let(:other_tag_name) { 'A unique tag' }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'name is not unique' do
+          let(:other_tag_name) { name }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:name]).to include('has already been taken')
+          end
+        end
+
+        describe 'case insensitive' do
+          let(:other_tag_name) { 'THAI FOOD' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:name]).to include('has already been taken')
+          end
+        end
       end
     end
   end

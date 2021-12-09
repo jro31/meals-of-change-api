@@ -2,6 +2,7 @@ module Api
   module V1
     class BaseController < ApplicationController
       include Pundit
+      include CurrentUserConcern
 
       skip_before_action :verify_authenticity_token
       # The 'verify_authenticity_token' method checks that the user typing into a form is the real user (not sure how)

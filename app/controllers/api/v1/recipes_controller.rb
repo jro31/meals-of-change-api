@@ -14,16 +14,15 @@ module Api
 
       # GET /api/v1/recipes/:id
       def show
-        # REMEMBER PUNDIT
         begin
           recipe = Recipe.find(params[:id])
-
-          raise 'Recipe not found' unless recipe # SHOULD THIS BE AN ACTUAL ERROR?
+          authorize recipe
 
           render json: {
             recipe: RecipeRepresenter.new(recipe).as_json
           }, status: :ok
         rescue => e
+          skip_after_action :verify_authorized
           render json: {
             error_message: e.message
           }, status: :not_found
@@ -33,6 +32,9 @@ module Api
       # POST /api/v1/recipes
       def create
         # COMPLETE THIS
+
+        # Find or create tags - save as lower case
+        # Throw error if tries to add more than 15 tags
       end
     end
   end

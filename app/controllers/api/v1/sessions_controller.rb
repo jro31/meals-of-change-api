@@ -1,8 +1,6 @@
 module Api
   module V1
     class SessionsController < Api::V1::BaseController
-      include CurrentUserConcern # Move this to application controller?
-
       skip_after_action :verify_authorized
 
       def create

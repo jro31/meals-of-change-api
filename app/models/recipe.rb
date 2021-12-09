@@ -6,6 +6,7 @@ class Recipe < ApplicationRecord
   has_many :tags, through: :recipe_tags
 
   validates_presence_of :name
-  # Add validation that at least one ingredient must exist
-  # Add validation that at least one step must exist
+  # Add validation that at least one ingredient must exist? (will make testing a pain)
+  # Add validation that at least one step must exist? (will make testing a pain)
+  # Add validation that cannot have more than 15 tags
 end
