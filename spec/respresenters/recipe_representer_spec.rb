@@ -12,9 +12,15 @@ describe RecipeRepresenter do
   let(:preparation) { 'Sliced' }
   let(:optional) { true }
   let!(:ingredient) { create(:ingredient, recipe: recipe, amount: amount, food: food, preparation: preparation, optional: optional) }
-  let(:position) { 4 }
-  let(:instructions) { 'Spread garlic butter on bread' }
-  let!(:step) { create(:step, recipe: recipe, position: position, instructions: instructions) }
+  let(:step_3_position) { 4 }
+  let(:step_3_instructions) { 'Eat garlic bread' }
+  let!(:step_3) { create(:step, recipe: recipe, position: step_3_position, instructions: step_3_instructions) }
+  let(:step_1_position) { 1 }
+  let(:step_1_instructions) { 'Make bread' }
+  let!(:step_1) { create(:step, recipe: recipe, position: step_1_position, instructions: step_1_instructions) }
+  let(:step_2_position) { 2 }
+  let(:step_2_instructions) { 'Spread garlic butter on bread' }
+  let!(:step_2) { create(:step, recipe: recipe, position: step_2_position, instructions: step_2_instructions) }
   let(:tag_1_name) { 'Japanese' }
   let(:tag_1) { create(:tag, name: tag_1_name) }
   let!(:tag_1_recipe_tag) { create(:recipe_tag, recipe: recipe, tag: tag_1) }
@@ -43,8 +49,16 @@ describe RecipeRepresenter do
         ],
         steps: [
           {
-            position: position,
-            instructions: instructions
+            position: step_1_position,
+            instructions: step_1_instructions
+          },
+          {
+            position: step_2_position,
+            instructions: step_2_instructions
+          },
+          {
+            position: step_3_position,
+            instructions: step_3_instructions
           }
         ],
         tags: [

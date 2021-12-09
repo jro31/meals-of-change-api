@@ -25,7 +25,7 @@ class RecipeRepresenter
   end
 
   def steps_array
-    recipe.steps.map { |step| StepRepresenter.new(step).as_json }
+    recipe.steps.order(:position).map { |step| StepRepresenter.new(step).as_json }
   end
 
   def tags_array

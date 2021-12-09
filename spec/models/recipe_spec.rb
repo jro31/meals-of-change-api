@@ -24,14 +24,6 @@ describe Recipe, type: :model do
       let!(:step) { create(:step, recipe: subject) }
       it { expect(subject.steps.first).to eq(step) }
 
-      describe 'order by position' do
-        let!(:step_3) { create(:step, recipe: subject, position: 4) }
-        let!(:step_4) { create(:step, recipe: subject, position: 5) }
-        let!(:step) { create(:step, recipe: subject, position: 1) }
-        let!(:step_2) { create(:step, recipe: subject, position: 2) }
-        xit { expect(subject.steps).to eq([step, step_2, step_3, step_4]) }
-      end
-
       describe 'dependent destroy' do
         it { expect { subject.destroy }.to change { Step.count }.by(-1) }
       end
