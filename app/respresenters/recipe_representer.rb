@@ -29,6 +29,6 @@ class RecipeRepresenter
   end
 
   def tags_array
-    recipe.tags.map { |tag| TagRepresenter.new(tag).as_json }
+    recipe.tags.order(:name).map { |tag| TagRepresenter.new(tag).as_json }
   end
 end

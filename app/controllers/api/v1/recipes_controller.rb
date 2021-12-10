@@ -12,6 +12,7 @@ module Api
         # and user
 
         # Don't return recipes that don't have at least one ingredient, and one step
+        # Prioritise recipes with photos?
       end
 
       # GET /api/v1/recipes/:id
@@ -33,26 +34,27 @@ module Api
 
       # POST /api/v1/recipes
       def create
-        # Throw error if tries to add more than 15 tags
+        begin
+          @recipe = Recipe.new(recipe_params)
+          authorize @recipe
 
-        @recipe = Recipe.new(recipe_params)
-        authorize @recipe
+          @recipe.user = current_user
+          find_or_create_tags
 
-        @recipe.user = current_user
-        find_or_create_tags
+          @recipe.save!
 
-        # binding.irb
-
-        # puts @recipe.ingredients.inspect
-        # puts @recipe.ingredients.first.recipe.inspect
-        # puts @recipe.steps.inspect
-        # puts @recipe.steps.first.recipe.inspect
-        # puts @recipe.save!
-
-        if @recipe.save
-          puts '🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈'
-        else
-          puts '🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉🙉'
+          render json: {
+            recipe: RecipeRepresenter.new(@recipe).as_json
+          }, status: :created
+        rescue Pundit::NotAuthorizedError
+          render json: {
+            error_message: 'User must be signed-in to create a recipe'
+          }, status: :unauthorized
+        rescue => e
+          puts e.inspect
+          render json: {
+            error_message: e.message
+          }, status: :unprocessable_entity
         end
       end
 
@@ -69,7 +71,7 @@ module Api
       def find_or_create_tags
         return unless params[:recipe][:tags].reject(&:blank?).any?
 
-        @recipe.tags << params[:recipe][:tags].map{ |tag_name| Tag.find_or_initialize_by(name: tag_name.downcase) }
+        @recipe.tags << params[:recipe][:tags].reject(&:blank?).map{ |tag_name| Tag.find_or_initialize_by(name: tag_name.downcase) }
       end
     end
   end

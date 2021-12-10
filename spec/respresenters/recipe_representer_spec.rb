@@ -63,12 +63,12 @@ describe RecipeRepresenter do
         ],
         tags: [
           {
-            id: tag_1.id,
-            name: tag_1_name
-          },
-          {
             id: tag_2.id,
             name: tag_2_name
+          },
+          {
+            id: tag_1.id,
+            name: tag_1_name
           }
         ]
       })

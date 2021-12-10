@@ -82,28 +82,237 @@ describe 'recipes API', type: :request do
       let(:email) { 'user@email.com' }
       let(:password) { 'password' }
       let!(:user) { create(:user, email: email, password: password) }
+      let(:expected_return) {
+        {
+          'recipe' => {
+            'id' => Recipe.last.id,
+            'user' => {
+              'id' => user.id,
+              'display_name' => user.display_name
+            },
+            'name' => name,
+            'time_minutes' => time_minutes,
+            'preface' => preface,
+            'ingredients' => [
+              {
+                'amount' => toast[:amount],
+                'food' => toast[:food],
+                'preparation' => toast[:preparation],
+                'optional' => toast[:optional]
+              },
+              {
+                'amount' => beans[:amount],
+                'food' => beans[:food],
+                'preparation' => nil,
+                'optional' => beans[:optional]
+              }
+            ],
+            'steps' => [
+              {
+                'position' => step_1[:position],
+                'instructions' => step_1[:instructions]
+              },
+              {
+                'position' => step_2[:position],
+                'instructions' => step_2[:instructions]
+              }
+            ],
+            'tags' => expected_tag_return
+          }
+        }
+      }
       before { post '/api/v1/sessions', params: { user: { email: email, password: password } } }
       context 'recipe has no tags' do
+        let(:expected_tag_return) { [] }
         it 'creates a new recipe' do
           expect { post url, params: params }.to change { Recipe.count }.by(1)
+                                             .and change { Ingredient.count }.by(2)
+                                             .and change { Step.count }.by(2)
+                                             .and change { Tag.count }.by(0)
+
+          expect(response).to have_http_status(:created)
+          expect(JSON.parse(response.body)).to eq(expected_return)
         end
       end
 
       context 'recipe has only new tags' do
-        # COMPLETE THIS
+        let(:new_tag_1) { 'New Tag 1' }
+        let(:new_tag_2) { 'New Tag 2' }
+        let(:tags) { [new_tag_1, new_tag_2] }
+        let(:expected_tag_return) {
+          [
+            {
+              'id' => Tag.first.id,
+              'name' => new_tag_1.downcase
+            },
+            {
+              'id' => Tag.last.id,
+              'name' => new_tag_2.downcase
+            }
+          ]
+        }
+        it 'creates a new recipe' do
+          expect { post url, params: params }.to change { Recipe.count }.by(1)
+                                             .and change { Ingredient.count }.by(2)
+                                             .and change { Step.count }.by(2)
+                                             .and change { Tag.count }.by(2)
+
+          expect(response).to have_http_status(:created)
+          expect(JSON.parse(response.body)).to eq(expected_return)
+        end
       end
 
       context 'recipe has only existing tags' do
-        # COMPLETE THIS
+        let!(:existing_tag_1) { create(:tag, name: 'existing tag 1') }
+        let!(:existing_tag_2) { create(:tag, name: 'existing tag 2') }
+        let(:tags) { [existing_tag_1.name, existing_tag_2.name] }
+        let(:expected_tag_return) {
+          [
+            {
+              'id' => existing_tag_1.id,
+              'name' => existing_tag_1.name
+            },
+            {
+              'id' => existing_tag_2.id,
+              'name' => existing_tag_2.name
+            }
+          ]
+        }
+        it 'creates a new recipe' do
+          expect { post url, params: params }.to change { Recipe.count }.by(1)
+                                             .and change { Ingredient.count }.by(2)
+                                             .and change { Step.count }.by(2)
+                                             .and change { Tag.count }.by(0)
+
+          expect(response).to have_http_status(:created)
+          expect(JSON.parse(response.body)).to eq(expected_return)
+        end
       end
 
       context 'recipe has new and existing tags' do
-        # COMPLETE THIS
+        let!(:existing_tag_1) { create(:tag, name: 'existing tag 1') }
+        let!(:existing_tag_2) { create(:tag, name: 'existing tag 2') }
+        let(:new_tag_1) { 'New Tag 1' }
+        let(:new_tag_2) { 'New Tag 2' }
+        let(:tags) { [existing_tag_1.name, new_tag_1, existing_tag_2.name, new_tag_2] }
+        let(:expected_tag_return) {
+          [
+            {
+              'id' => existing_tag_1.id,
+              'name' => existing_tag_1.name
+            },
+            {
+              'id' => existing_tag_2.id,
+              'name' => existing_tag_2.name
+            },
+            {
+              'id' => Tag.second_to_last.id,
+              'name' => new_tag_1.downcase
+            },
+            {
+              'id' => Tag.last.id,
+              'name' => new_tag_2.downcase
+            }
+          ]
+        }
+        it 'creates a new recipe' do
+          expect { post url, params: params }.to change { Recipe.count }.by(1)
+                                             .and change { Ingredient.count }.by(2)
+                                             .and change { Step.count }.by(2)
+                                             .and change { Tag.count }.by(2)
+
+          expect(response).to have_http_status(:created)
+          expect(JSON.parse(response.body)).to eq(expected_return)
+        end
+
+        context 'recipe is invalid' do
+          let(:name) { '' }
+          it 'does not create a recipe' do
+            expect { post url, params: params }.to change { Recipe.count }.by(0)
+                                               .and change { Ingredient.count }.by(0)
+                                               .and change { Step.count }.by(0)
+                                               .and change { Tag.count }.by(0)
+
+            expect(response).to have_http_status(:unprocessable_entity)
+            expect(JSON.parse(response.body)).to eq({
+              'error_message' => 'Validation failed: Name can\'t be blank'
+            })
+          end
+        end
+
+        context 'an ingredient is invalid' do
+          let(:beans) { { amount: '1 can', food: '', optional: true } }
+          it 'does not create a recipe' do
+            expect { post url, params: params }.to change { Recipe.count }.by(0)
+                                               .and change { Ingredient.count }.by(0)
+                                               .and change { Step.count }.by(0)
+                                               .and change { Tag.count }.by(0)
+
+            expect(response).to have_http_status(:unprocessable_entity)
+            expect(JSON.parse(response.body)).to eq({
+              'error_message' => 'Validation failed: Ingredients food can\'t be blank'
+            })
+          end
+        end
+
+        context 'a step is invalid' do
+          let(:step_1) { { position: 'one', instructions: 'Toast toast' } }
+          it 'does not create a recipe' do
+            expect { post url, params: params }.to change { Recipe.count }.by(0)
+                                               .and change { Ingredient.count }.by(0)
+                                               .and change { Step.count }.by(0)
+                                               .and change { Tag.count }.by(0)
+
+            expect(response).to have_http_status(:unprocessable_entity)
+            expect(JSON.parse(response.body)).to eq({
+              'error_message' => 'Validation failed: Steps position is not a number'
+            })
+          end
+        end
+
+        context 'a tag is invalid' do
+          let(:new_tag_1) { '' }
+          let(:expected_tag_return) {
+            [
+              {
+                'id' => existing_tag_1.id,
+                'name' => existing_tag_1.name
+              },
+              {
+                'id' => existing_tag_2.id,
+                'name' => existing_tag_2.name
+              },
+              {
+                'id' => Tag.last.id,
+                'name' => new_tag_2.downcase
+              }
+            ]
+          }
+          it 'creates the recipe, omitting the invalid tag' do
+            expect { post url, params: params }.to change { Recipe.count }.by(1)
+                                                .and change { Ingredient.count }.by(2)
+                                                .and change { Step.count }.by(2)
+                                                .and change { Tag.count }.by(1)
+
+            expect(response).to have_http_status(:created)
+            expect(JSON.parse(response.body)).to eq(expected_return)
+          end
+        end
       end
     end
 
     context 'user is not logged-in' do
-      # COMPLETE THIS
+      it 'does not create a recipe' do
+        expect { post url, params: params }.to change { Recipe.count }.by(0)
+                                           .and change { Ingredient.count }.by(0)
+                                           .and change { Step.count }.by(0)
+                                           .and change { Tag.count }.by(0)
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(JSON.parse(response.body)).to eq({
+          'error_message' => 'User must be signed-in to create a recipe'
+        })
+      end
     end
   end
 end
