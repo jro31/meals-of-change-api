@@ -49,7 +49,8 @@ describe 'recipes API', type: :request do
                 'id' => tag.id,
                 'name' => tag.name
               }
-            ]
+            ],
+            'photo' => recipe.photo_url
           }
         })
       end
@@ -67,7 +68,6 @@ describe 'recipes API', type: :request do
     end
   end
 
-  # TODO - Update to include attaching a photo
   describe 'POST /api/v1/recipes' do
     let(:name) { 'Beans on toast' }
     let(:time_minutes) { 10 }
@@ -77,8 +77,14 @@ describe 'recipes API', type: :request do
     let(:step_1) { { position: 1, instructions: 'Toast toast' } }
     let(:step_2) { { position: 2, instructions: 'Cook beans' } }
     let(:tags) { [] }
+    let(:photo_blob_signed_id) { 'pH0t0_8108_51n63d_1D' }
+    let(:photo_url) { 'www.photo-url.com' }
     let(:url) { '/api/v1/recipes' }
-    let(:params) { { recipe: { name: name, time_minutes: time_minutes, preface: preface, ingredients_attributes: [toast, beans], steps_attributes: [step_1, step_2], tags: tags } } }
+    let(:params) { { recipe: { name: name, time_minutes: time_minutes, preface: preface, ingredients_attributes: [toast, beans], steps_attributes: [step_1, step_2], tags: tags, photo_blob_signed_id: photo_blob_signed_id } } }
+    before do
+      allow_any_instance_of(Recipe).to receive_message_chain(:photo, :attach).and_return(true)
+      allow_any_instance_of(Recipe).to receive(:photo_url).and_return(photo_url)
+    end
     context 'user is logged-in' do
       let(:email) { 'user@email.com' }
       let(:password) { 'password' }
@@ -118,7 +124,8 @@ describe 'recipes API', type: :request do
                 'instructions' => step_2[:instructions]
               }
             ],
-            'tags' => expected_tag_return
+            'tags' => expected_tag_return,
+            'photo' => photo_url
           }
         }
       }
@@ -294,6 +301,20 @@ describe 'recipes API', type: :request do
                                                 .and change { Ingredient.count }.by(2)
                                                 .and change { Step.count }.by(2)
                                                 .and change { Tag.count }.by(1)
+
+            expect(response).to have_http_status(:created)
+            expect(JSON.parse(response.body)).to eq(expected_return)
+          end
+        end
+
+        context 'no photo blob signed id is passed-in' do
+          let(:photo_blob_signed_id) { nil }
+          let(:photo_url) { nil }
+          it 'creates a new recipe' do
+            expect { post url, params: params }.to change { Recipe.count }.by(1)
+                                               .and change { Ingredient.count }.by(2)
+                                               .and change { Step.count }.by(2)
+                                               .and change { Tag.count }.by(2)
 
             expect(response).to have_http_status(:created)
             expect(JSON.parse(response.body)).to eq(expected_return)

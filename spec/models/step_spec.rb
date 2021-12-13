@@ -27,22 +27,6 @@ describe Step, type: :model do
         end
       end
 
-      # describe 'validates uniqueness of position' do
-      #   let!(:other_step) { create(:step, position: other_step_position) }
-      #   context 'position is unique' do
-      #     let(:other_step_position) { position + 1 }
-      #     xit { expect(subject).to be_valid }
-      #   end
-
-      #   context 'position is not unique' do
-      #     let(:other_step_position) { position }
-      #     xit 'is invalid with the correct error' do
-      #       expect(subject).not_to be_valid
-      #       expect(subject.errors.messages[:position]).to include('has already been taken')
-      #     end
-      #   end
-      # end
-
       describe 'validates numericality of position' do
         describe 'only integer' do
           context 'position is a decimal' do

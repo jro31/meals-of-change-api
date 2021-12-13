@@ -3,6 +3,7 @@ module Api
     class DirectUploadController < Api::V1::BaseController
       def create
         authorize Recipe
+        # TODO - Update to upload varying photo sizes (and perhaps have a max-size)
         response = generate_direct_upload(blob_params)
         render json: response
       end

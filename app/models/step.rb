@@ -8,7 +8,7 @@ class Step < ApplicationRecord
   private
 
   def position_and_recipe_are_unique
-    return unless recipe.steps.where(position: position).any?
+    return unless recipe.steps.where(position: position).where.not(id: id).any?
 
     errors.add(:position, 'already exists for this recipe')
   end
