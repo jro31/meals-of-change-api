@@ -31,12 +31,12 @@ describe Step, type: :model do
         let!(:other_step) { create(:step, position: other_step_position) }
         context 'position is unique' do
           let(:other_step_position) { position + 1 }
-          it { expect(subject).to be_valid }
+          xit { expect(subject).to be_valid }
         end
 
         context 'position is not unique' do
           let(:other_step_position) { position }
-          it 'is invalid with the correct error' do
+          xit 'is invalid with the correct error' do
             expect(subject).not_to be_valid
             expect(subject.errors.messages[:position]).to include('has already been taken')
           end

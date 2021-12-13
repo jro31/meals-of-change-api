@@ -38,6 +38,8 @@ module Api
           @recipe = Recipe.new(recipe_params)
           authorize @recipe
 
+          @recipe.photo.attach(params[:recipe][:photo]) if params[:recipe][:photo].present?
+
           @recipe.user = current_user
           find_or_create_tags
 

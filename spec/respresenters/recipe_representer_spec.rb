@@ -28,6 +28,7 @@ describe RecipeRepresenter do
   let(:tag_2) { create(:tag, name: tag_2_name) }
   let!(:tag_2_recipe_tag) { create(:recipe_tag, recipe: recipe, tag: tag_2) }
   describe 'as_json' do
+    # TODO - Update this to include returning a photo
     subject { RecipeRepresenter.new(recipe).as_json }
     it 'returns the correct hash' do
       expect(subject).to eq({
