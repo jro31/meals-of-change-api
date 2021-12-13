@@ -27,21 +27,21 @@ describe Step, type: :model do
         end
       end
 
-      describe 'validates uniqueness of position' do
-        let!(:other_step) { create(:step, position: other_step_position) }
-        context 'position is unique' do
-          let(:other_step_position) { position + 1 }
-          xit { expect(subject).to be_valid }
-        end
+      # describe 'validates uniqueness of position' do
+      #   let!(:other_step) { create(:step, position: other_step_position) }
+      #   context 'position is unique' do
+      #     let(:other_step_position) { position + 1 }
+      #     xit { expect(subject).to be_valid }
+      #   end
 
-        context 'position is not unique' do
-          let(:other_step_position) { position }
-          xit 'is invalid with the correct error' do
-            expect(subject).not_to be_valid
-            expect(subject.errors.messages[:position]).to include('has already been taken')
-          end
-        end
-      end
+      #   context 'position is not unique' do
+      #     let(:other_step_position) { position }
+      #     xit 'is invalid with the correct error' do
+      #       expect(subject).not_to be_valid
+      #       expect(subject.errors.messages[:position]).to include('has already been taken')
+      #     end
+      #   end
+      # end
 
       describe 'validates numericality of position' do
         describe 'only integer' do
@@ -70,6 +70,30 @@ describe Step, type: :model do
               expect(subject.errors.messages[:position]).to include('must be greater than or equal to 1')
             end
           end
+        end
+      end
+
+      describe '#position_and_recipe_are_unique' do
+        let(:other_step_position) { position }
+        let(:other_step_recipe) { subject.recipe }
+        let!(:other_step) { create(:step, recipe: other_step_recipe, position: other_step_position) }
+        context 'other step has the same recipe' do
+          context 'other step has the same position' do
+            it 'is invalid with the correct error' do
+              expect(subject).not_to be_valid
+              expect(subject.errors.messages[:position]).to include('already exists for this recipe')
+            end
+          end
+
+          context 'other step has a different position' do
+            let(:other_step_position) { position + 1 }
+            it { expect(subject).to be_valid }
+          end
+        end
+
+        context 'other step has a different recipe' do
+          let(:other_step_recipe) { create(:recipe) }
+          it { expect(subject).to be_valid }
         end
       end
     end
