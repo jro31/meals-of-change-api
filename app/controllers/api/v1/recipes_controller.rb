@@ -4,7 +4,7 @@ module Api
 
       # GET /api/v1/recipes
       def index
-        # COMPLETE THIS
+        # TODO
 
         # Include pagination (see rails-nile)
         # Must be filterable by tag,

@@ -45,7 +45,7 @@ describe Recipe, type: :model do
     end
 
     describe 'has one attached photo' do
-      # COMPLETE THIS
+      # TODO
     end
   end
 
@@ -70,6 +70,6 @@ describe Recipe, type: :model do
   end
 
   describe '#photo_url' do
-    # COMPLETE THIS
+    # TODO
   end
 end

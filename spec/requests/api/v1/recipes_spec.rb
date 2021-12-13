@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'recipes API', type: :request do
   describe 'GET /api/v1/recipes' do
-    # COMPLETE THIS
+    # TODO
   end
 
   describe 'GET /api/v1/recipes/:id' do
@@ -67,6 +67,7 @@ describe 'recipes API', type: :request do
     end
   end
 
+  # TODO - Update to include attaching a photo
   describe 'POST /api/v1/recipes' do
     let(:name) { 'Beans on toast' }
     let(:time_minutes) { 10 }
