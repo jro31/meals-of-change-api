@@ -1,15 +1,27 @@
 module Api
   module V1
     class RecipesController < Api::V1::BaseController
-
       # GET /api/v1/recipes
       def index
-        # TODO
+        begin
+          filter_recipes
 
+          render json: {
+            recipes: RecipesRepresenter.new(@recipes).as_json
+          }, status: :ok
+        rescue => e
+          skip_after_action :verify_policy_scoped
+          render json: {
+            error_message: e.message
+          }, status: :not_found
+        end
+
+        # TODO
         # Include pagination (see rails-nile)
         # Must be filterable by tag,
         # search query (searching recipe name, ingredient food and tag name)
-        # and user
+        # and user.
+        # Include ability to return just recipe IDs
 
         # Don't return recipes that don't have at least one ingredient, and one step
         # Prioritise recipes with photos?
@@ -67,6 +79,19 @@ module Api
         ], steps_attributes: [
           :position, :instructions
         ])
+      end
+
+      def filter_recipes
+        if params[:user_id]
+          @recipes = policy_scope(Recipe).where(user: User.find(params[:user_id]))
+        elsif params[:tag_id]
+          Tag.find(params[:tag_id])
+          @recipes = policy_scope(Recipe).joins(:tags).where(tags: { id: params[:tag_id] })
+        elsif params[:query]
+          # TODO - Complete this
+        else
+          @recipes = policy_scope(Recipe)
+        end
       end
 
       def attach_photo
