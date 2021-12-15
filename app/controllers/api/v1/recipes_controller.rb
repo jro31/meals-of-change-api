@@ -4,7 +4,7 @@ module Api
 
       # GET /api/v1/recipes
       def index
-        # COMPLETE THIS
+        # TODO
 
         # Include pagination (see rails-nile)
         # Must be filterable by tag,
@@ -38,7 +38,8 @@ module Api
           @recipe = Recipe.new(recipe_params)
           authorize @recipe
 
-          @recipe.user = current_user
+          attach_photo
+          set_user
           find_or_create_tags
 
           @recipe.save!
@@ -66,6 +67,14 @@ module Api
         ], steps_attributes: [
           :position, :instructions
         ])
+      end
+
+      def attach_photo
+        @recipe.photo.attach(params[:recipe][:photo_blob_signed_id]) if params[:recipe][:photo_blob_signed_id].present?
+      end
+
+      def set_user
+        @recipe.user = current_user
       end
 
       def find_or_create_tags

@@ -12,7 +12,8 @@ class RecipeRepresenter
       preface: recipe.preface,
       ingredients: ingredients_array,
       steps: steps_array,
-      tags: tags_array
+      tags: tags_array,
+      photo: recipe.photo_url
     }
   end
 

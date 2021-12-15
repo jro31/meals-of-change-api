@@ -70,7 +70,8 @@ describe RecipeRepresenter do
             id: tag_1.id,
             name: tag_1_name
           }
-        ]
+        ],
+        photo: nil
       })
     end
   end

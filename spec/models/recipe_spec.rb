@@ -43,6 +43,10 @@ describe Recipe, type: :model do
       let!(:recipe_tag) { create(:recipe_tag, recipe: subject, tag: tag) }
       it { expect(subject.tags.first).to eq(tag) }
     end
+
+    describe 'has one attached photo' do
+      # TODO
+    end
   end
 
   describe 'validations' do
@@ -63,5 +67,9 @@ describe Recipe, type: :model do
         end
       end
     end
+  end
+
+  describe '#photo_url' do
+    # TODO
   end
 end

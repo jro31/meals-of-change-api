@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       get :logged_in, to: 'sessions#logged_in'
       delete :logout, to: 'sessions#logout'
       resources :recipes, only: [:index, :show, :create]
+      post :presigned_url, to: 'direct_upload#create'
     end
   end
 
