@@ -2,33 +2,26 @@ module Api
   module V1
     class RecipesController < Api::V1::BaseController
       # GET /api/v1/recipes
+      # GET /api/v1/recipes?limit=10
+      # GET /api/v1/recipes?offset=5
+      # GET /api/v1/recipes?limit=10&offset=5
       # GET /api/v1/recipes?ids_array=true
       # GET /api/v1/recipes?user_id=1
-      # GET /api/v1/recipes?tag_id=1
-      # TODO - GET /api/v1/recipes?query=somequery
+      # GET /api/v1/recipes?tag_name=thai+food
+      # TODO - GET /api/v1/recipes?query=some+query
       def index
         begin
           filter_recipes
-
-          render json: {
-            recipes: RecipesRepresenter.new(
-              @recipes,
-              ActiveModel::Type::Boolean.new.cast(params[:ids_array])
-            ).as_json
-          }, status: :ok
+          render json: recipes_return, status: :ok
         rescue => e
-          skip_after_action :verify_policy_scoped
+          @skip_after_action = true
           render json: {
             error_message: e.message
           }, status: :not_found
         end
 
-        # TODO
-        # Include pagination (see rails-nile)
-        # Include ability to return just recipe IDs
-
-        # Don't return recipes that don't have at least one ingredient, and one step
-        # Prioritise recipes with photos?
+        # TODO - Don't return recipes that don't have at least one ingredient, and one step?
+        # TODO - Prioritise recipes with photos?
       end
 
       # GET /api/v1/recipes/:id
@@ -41,7 +34,7 @@ module Api
             recipe: RecipeRepresenter.new(recipe).as_json
           }, status: :ok
         rescue => e
-          skip_after_action :verify_authorized
+          @skip_after_action = true
           render json: {
             error_message: e.message
           }, status: :not_found
@@ -68,7 +61,6 @@ module Api
             error_message: 'User must be signed-in to create a recipe'
           }, status: :unauthorized
         rescue => e
-          puts e.inspect
           render json: {
             error_message: e.message
           }, status: :unprocessable_entity
@@ -88,14 +80,25 @@ module Api
       def filter_recipes
         if params[:user_id]
           @recipes = policy_scope(Recipe).where(user: User.find(params[:user_id]))
-        elsif params[:tag_id]
-          Tag.find(params[:tag_id])
-          @recipes = policy_scope(Recipe).joins(:tags).where(tags: { id: params[:tag_id] })
+                                         .limit(params[:limit]).offset(params[:offset])
+        elsif params[:tag_name]
+          raise 'tag not found' unless tag = Tag.find_by(name: params[:tag_name].downcase)
+          @recipes = policy_scope(Recipe).joins(:tags)
+                                         .where(tags: { id: tag.id })
+                                         .limit(params[:limit]).offset(params[:offset])
         elsif params[:query]
           # TODO - Complete this
           # Should search recipe name, ingredient food, and tag name
         else
-          @recipes = policy_scope(Recipe)
+          @recipes = policy_scope(Recipe).limit(params[:limit]).offset(params[:offset])
+        end
+      end
+
+      def recipes_return
+        if ActiveModel::Type::Boolean.new.cast(params[:ids_array])
+          { recipe_ids: @recipes.pluck(:id) }
+        else
+          { recipes: RecipesRepresenter.new(@recipes).as_json }
         end
       end
 

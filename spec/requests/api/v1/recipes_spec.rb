@@ -2,33 +2,235 @@ require 'rails_helper'
 
 describe 'recipes API', type: :request do
   describe 'GET /api/v1/recipes' do
-    # TODO
-    context 'ids_array=true param is passed-in' do
-      # TODO
+    let(:params) { '' }
+    let(:url) { "/api/v1/recipes?#{params}" }
+    context 'recipes exist' do
+      let(:display_name_1) { 'Dragon' }
+      let(:user_1) { create(:user, display_name: display_name_1) }
+      let(:name_1) { 'Garlic bread' }
+      let(:time_minutes_1) { 30 }
+      let!(:recipe_1) { create(:recipe, user: user_1, name: name_1, time_minutes: time_minutes_1) }
+      let(:display_name_2) { 'Brutus' }
+      let(:user_2) { create(:user, display_name: display_name_2) }
+      let(:name_2) { 'Spaghetti' }
+      let(:time_minutes_2) { 10 }
+      let!(:recipe_2) { create(:recipe, user: user_2, name: name_2, time_minutes: time_minutes_2) }
+      let(:photo_url) { 'www.photo-url.com' }
+      before { allow_any_instance_of(Recipe).to receive(:photo_url).and_return(photo_url) }
+      it 'returns the recipes' do
+        get url
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)).to eq({
+          'recipes' => [
+            {
+              'id' => recipe_1.id,
+              'author' => display_name_1,
+              'name' => name_1,
+              'time_minutes' => time_minutes_1,
+              'photo' => photo_url
+            },
+            {
+              'id' => recipe_2.id,
+              'author' => display_name_2,
+              'name' => name_2,
+              'time_minutes' => time_minutes_2,
+              'photo' => photo_url
+            }
+          ]
+        })
+      end
+
+      context 'limit param is passed-in' do
+        let!(:recipe_3) { create(:recipe) }
+        let!(:recipe_4) { create(:recipe) }
+        let!(:recipe_5) { create(:recipe) }
+        let!(:recipe_6) { create(:recipe) }
+        let!(:recipe_7) { create(:recipe) }
+        let!(:recipe_8) { create(:recipe) }
+        let(:params) { 'limit=3' }
+        it 'returns the first three recipes' do
+          get url
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)).to eq({
+            'recipes' => [
+              {
+                'id' => recipe_1.id,
+                'author' => display_name_1,
+                'name' => name_1,
+                'time_minutes' => time_minutes_1,
+                'photo' => photo_url
+              },
+              {
+                'id' => recipe_2.id,
+                'author' => display_name_2,
+                'name' => name_2,
+                'time_minutes' => time_minutes_2,
+                'photo' => photo_url
+              },
+              {
+                'id' => recipe_3.id,
+                'author' => recipe_3.user.display_name,
+                'name' => recipe_3.name,
+                'time_minutes' => recipe_3.time_minutes,
+                'photo' => photo_url
+              }
+            ]
+          })
+        end
+
+        context 'offset param is passed-in' do
+          let(:params) { 'limit=3&offset=5' }
+          it 'returns the recipes 6, 7 and 8' do
+            get url
+
+            expect(response).to have_http_status(:ok)
+            expect(JSON.parse(response.body)).to eq({
+              'recipes' => [
+                {
+                  'id' => recipe_6.id,
+                  'author' => recipe_6.user.display_name,
+                  'name' => recipe_6.name,
+                  'time_minutes' => recipe_6.time_minutes,
+                  'photo' => photo_url
+                },
+                {
+                  'id' => recipe_7.id,
+                  'author' => recipe_7.user.display_name,
+                  'name' => recipe_7.name,
+                  'time_minutes' => recipe_7.time_minutes,
+                  'photo' => photo_url
+                },
+                {
+                  'id' => recipe_8.id,
+                  'author' => recipe_8.user.display_name,
+                  'name' => recipe_8.name,
+                  'time_minutes' => recipe_8.time_minutes,
+                  'photo' => photo_url
+                }
+              ]
+            })
+          end
+        end
+      end
+
+      context 'offset param is passed-in' do
+        let(:params) { 'offset=1' }
+        it 'returns just the second recipe' do
+          get url
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)).to eq({
+            'recipes' => [
+              {
+                'id' => recipe_2.id,
+                'author' => display_name_2,
+                'name' => name_2,
+                'time_minutes' => time_minutes_2,
+                'photo' => photo_url
+              }
+            ]
+          })
+        end
+      end
+
+      context 'ids_array=true param is passed-in' do
+        let(:params) { 'ids_array=true' }
+        it 'returns an array of IDs' do
+          get url
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)).to eq({
+            'recipe_ids' => [recipe_1.id, recipe_2.id]
+          })
+        end
+      end
+
+      context 'user_id param is passed-in' do
+        let(:params) { "user_id=#{user_id}" }
+        context 'user exists' do
+          let(:user_id) { user_1.id }
+          it 'returns this user\'s recipes' do
+            get url
+
+            expect(response).to have_http_status(:ok)
+            expect(JSON.parse(response.body)).to eq({
+              'recipes' => [
+                {
+                  'id' => recipe_1.id,
+                  'author' => display_name_1,
+                  'name' => name_1,
+                  'time_minutes' => time_minutes_1,
+                  'photo' => photo_url
+                }
+              ]
+            })
+          end
+        end
+
+        context 'user does not exist' do
+          let(:user_id) { User.last.id + 1 }
+          it 'returns a not found error' do
+            get url
+
+            expect(response).to have_http_status(:not_found)
+            expect(JSON.parse(response.body)).to eq({
+              'error_message' => "Couldn't find User with 'id'=#{user_id}"
+            })
+          end
+        end
+      end
+
+      context 'tag_name param is passed-in' do
+        let(:params) { "tag_name=Garlic+bread" }
+        context 'tag exists' do
+          let(:tag) { create(:tag, name: 'garlic bread') }
+          let!(:recipe_tag) { create(:recipe_tag, recipe: recipe_1, tag: tag) }
+          it 'returns this tag\'s recipes' do
+            get url
+
+            expect(response).to have_http_status(:ok)
+            expect(JSON.parse(response.body)).to eq({
+              'recipes' => [
+                {
+                  'id' => recipe_1.id,
+                  'author' => display_name_1,
+                  'name' => name_1,
+                  'time_minutes' => time_minutes_1,
+                  'photo' => photo_url
+                }
+              ]
+            })
+          end
+        end
+
+        context 'tag does not exist' do
+          it 'returns a not found error' do
+            get url
+
+            expect(response).to have_http_status(:not_found)
+            expect(JSON.parse(response.body)).to eq({
+              'error_message' => "tag not found"
+            })
+          end
+        end
+      end
+
+      context 'query param is passed-in' do
+        # TODO
+      end
     end
 
-    context 'user_id param is passed-in' do
-      context 'user exists' do
-        # TODO
-      end
+    context 'no recipes exist' do
+      it 'returns an empty array' do
+        get url
 
-      context 'user does not exist' do
-        # TODO
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)).to eq({
+          'recipes' => []
+        })
       end
-    end
-
-    context 'tag_id param is passed-in' do
-      context 'tag exists' do
-        # TODO
-      end
-
-      context 'tag does not exist' do
-        # TODO
-      end
-    end
-
-    context 'query param is passed-in' do
-      # TODO
     end
   end
 

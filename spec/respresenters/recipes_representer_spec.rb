@@ -14,36 +14,26 @@ describe RecipesRepresenter do
   let(:photo_url) { 'www.photo-url.com' }
   before { allow_any_instance_of(Recipe).to receive(:photo_url).and_return(photo_url) }
   describe 'as_json' do
-    subject { RecipesRepresenter.new(Recipe.all, ids_array).as_json }
-    context 'ids_array is true' do
-      let(:ids_array) { true }
-      it 'returns an array of ids' do
-        expect(subject).to eq([recipe_1.id, recipe_2.id])
-      end
-    end
-
-    context 'ids_array is falsey' do
-      let(:ids_array) { false }
-      it 'returns the correct hash' do
-        expect(subject).to eq(
-          [
-            {
-              id: recipe_1.id,
-              author: display_name_1,
-              name: name_1,
-              time_minutes: time_minutes_1,
-              photo: photo_url
-            },
-            {
-              id: recipe_2.id,
-              author: display_name_2,
-              name: name_2,
-              time_minutes: time_minutes_2,
-              photo: photo_url
-            }
-          ]
-        )
-      end
+    subject { RecipesRepresenter.new(Recipe.all).as_json }
+    it 'returns the correct hash' do
+      expect(subject).to eq(
+        [
+          {
+            id: recipe_1.id,
+            author: display_name_1,
+            name: name_1,
+            time_minutes: time_minutes_1,
+            photo: photo_url
+          },
+          {
+            id: recipe_2.id,
+            author: display_name_2,
+            name: name_2,
+            time_minutes: time_minutes_2,
+            photo: photo_url
+          }
+        ]
+      )
     end
   end
 end
