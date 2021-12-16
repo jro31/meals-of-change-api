@@ -3,6 +3,33 @@ require 'rails_helper'
 describe 'recipes API', type: :request do
   describe 'GET /api/v1/recipes' do
     # TODO
+    context 'ids_array=true param is passed-in' do
+      # TODO
+    end
+
+    context 'user_id param is passed-in' do
+      context 'user exists' do
+        # TODO
+      end
+
+      context 'user does not exist' do
+        # TODO
+      end
+    end
+
+    context 'tag_id param is passed-in' do
+      context 'tag exists' do
+        # TODO
+      end
+
+      context 'tag does not exist' do
+        # TODO
+      end
+    end
+
+    context 'query param is passed-in' do
+      # TODO
+    end
   end
 
   describe 'GET /api/v1/recipes/:id' do

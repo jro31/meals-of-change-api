@@ -2,12 +2,19 @@ module Api
   module V1
     class RecipesController < Api::V1::BaseController
       # GET /api/v1/recipes
+      # GET /api/v1/recipes?ids_array=true
+      # GET /api/v1/recipes?user_id=1
+      # GET /api/v1/recipes?tag_id=1
+      # TODO - GET /api/v1/recipes?query=somequery
       def index
         begin
           filter_recipes
 
           render json: {
-            recipes: RecipesRepresenter.new(@recipes).as_json
+            recipes: RecipesRepresenter.new(
+              @recipes,
+              ActiveModel::Type::Boolean.new.cast(params[:ids_array])
+            ).as_json
           }, status: :ok
         rescue => e
           skip_after_action :verify_policy_scoped
@@ -18,9 +25,6 @@ module Api
 
         # TODO
         # Include pagination (see rails-nile)
-        # Must be filterable by tag,
-        # search query (searching recipe name, ingredient food and tag name)
-        # and user.
         # Include ability to return just recipe IDs
 
         # Don't return recipes that don't have at least one ingredient, and one step
@@ -89,6 +93,7 @@ module Api
           @recipes = policy_scope(Recipe).joins(:tags).where(tags: { id: params[:tag_id] })
         elsif params[:query]
           # TODO - Complete this
+          # Should search recipe name, ingredient food, and tag name
         else
           @recipes = policy_scope(Recipe)
         end
