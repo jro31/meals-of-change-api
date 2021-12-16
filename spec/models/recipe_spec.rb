@@ -69,6 +69,17 @@ describe Recipe, type: :model do
     end
   end
 
+  describe 'default scope' do
+    let!(:recipe_1) { create(:recipe, created_at: 3.minutes.ago) }
+    let!(:recipe_2) { create(:recipe, created_at: 1.minutes.ago) }
+    let!(:recipe_3) { create(:recipe, created_at: 5.minutes.ago) }
+    let!(:recipe_4) { create(:recipe, created_at: 2.minutes.ago) }
+    let!(:recipe_5) { create(:recipe, created_at: 4.minutes.ago) }
+    it 'orders recipes by created at in descending order' do
+      expect(Recipe.all).to eq([recipe_2, recipe_4, recipe_1, recipe_5, recipe_3])
+    end
+  end
+
   describe '#photo_url' do
     # TODO
   end

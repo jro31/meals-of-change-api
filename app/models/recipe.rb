@@ -14,6 +14,8 @@ class Recipe < ApplicationRecord
   # TODO - Add validation that at least one step must exist? (will make testing a pain)
   # TODO - Add validation that cannot have more than 15 tags
 
+  default_scope { order(created_at: :desc) }
+
   def photo_url
     if photo.attached?
       photo.blob.service_url
