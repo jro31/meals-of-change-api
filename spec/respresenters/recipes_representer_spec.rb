@@ -19,17 +19,17 @@ describe RecipesRepresenter do
       expect(subject).to eq(
         [
           {
-            id: recipe_1.id,
-            author: display_name_1,
-            name: name_1,
-            time_minutes: time_minutes_1,
-            photo: photo_url
-          },
-          {
             id: recipe_2.id,
             author: display_name_2,
             name: name_2,
             time_minutes: time_minutes_2,
+            photo: photo_url
+          },
+          {
+            id: recipe_1.id,
+            author: display_name_1,
+            name: name_1,
+            time_minutes: time_minutes_1,
             photo: photo_url
           }
         ]

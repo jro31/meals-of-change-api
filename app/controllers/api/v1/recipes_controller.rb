@@ -96,7 +96,7 @@ module Api
 
       def recipes_return
         if ActiveModel::Type::Boolean.new.cast(params[:ids_array])
-          { recipe_ids: @recipes.pluck(:id) }
+          { recipe_ids: @recipes.unscoped.pluck(:id) }
         else
           { recipes: RecipesRepresenter.new(@recipes).as_json }
         end

@@ -24,17 +24,17 @@ describe 'recipes API', type: :request do
         expect(JSON.parse(response.body)).to eq({
           'recipes' => [
             {
-              'id' => recipe_1.id,
-              'author' => display_name_1,
-              'name' => name_1,
-              'time_minutes' => time_minutes_1,
-              'photo' => photo_url
-            },
-            {
               'id' => recipe_2.id,
               'author' => display_name_2,
               'name' => name_2,
               'time_minutes' => time_minutes_2,
+              'photo' => photo_url
+            },
+            {
+              'id' => recipe_1.id,
+              'author' => display_name_1,
+              'name' => name_1,
+              'time_minutes' => time_minutes_1,
               'photo' => photo_url
             }
           ]
@@ -56,24 +56,24 @@ describe 'recipes API', type: :request do
           expect(JSON.parse(response.body)).to eq({
             'recipes' => [
               {
-                'id' => recipe_1.id,
-                'author' => display_name_1,
-                'name' => name_1,
-                'time_minutes' => time_minutes_1,
+                'id' => recipe_8.id,
+                'author' => recipe_8.user.display_name,
+                'name' => recipe_8.name,
+                'time_minutes' => recipe_8.time_minutes,
                 'photo' => photo_url
               },
               {
-                'id' => recipe_2.id,
-                'author' => display_name_2,
-                'name' => name_2,
-                'time_minutes' => time_minutes_2,
+                'id' => recipe_7.id,
+                'author' => recipe_7.user.display_name,
+                'name' => recipe_7.name,
+                'time_minutes' => recipe_7.time_minutes,
                 'photo' => photo_url
               },
               {
-                'id' => recipe_3.id,
-                'author' => recipe_3.user.display_name,
-                'name' => recipe_3.name,
-                'time_minutes' => recipe_3.time_minutes,
+                'id' => recipe_6.id,
+                'author' => recipe_6.user.display_name,
+                'name' => recipe_6.name,
+                'time_minutes' => recipe_6.time_minutes,
                 'photo' => photo_url
               }
             ]
@@ -89,24 +89,24 @@ describe 'recipes API', type: :request do
             expect(JSON.parse(response.body)).to eq({
               'recipes' => [
                 {
-                  'id' => recipe_6.id,
-                  'author' => recipe_6.user.display_name,
-                  'name' => recipe_6.name,
-                  'time_minutes' => recipe_6.time_minutes,
+                  'id' => recipe_3.id,
+                  'author' => recipe_3.user.display_name,
+                  'name' => recipe_3.name,
+                  'time_minutes' => recipe_3.time_minutes,
                   'photo' => photo_url
                 },
                 {
-                  'id' => recipe_7.id,
-                  'author' => recipe_7.user.display_name,
-                  'name' => recipe_7.name,
-                  'time_minutes' => recipe_7.time_minutes,
+                  'id' => recipe_2.id,
+                  'author' => display_name_2,
+                  'name' => name_2,
+                  'time_minutes' => time_minutes_2,
                   'photo' => photo_url
                 },
                 {
-                  'id' => recipe_8.id,
-                  'author' => recipe_8.user.display_name,
-                  'name' => recipe_8.name,
-                  'time_minutes' => recipe_8.time_minutes,
+                  'id' => recipe_1.id,
+                  'author' => display_name_1,
+                  'name' => name_1,
+                  'time_minutes' => time_minutes_1,
                   'photo' => photo_url
                 }
               ]
@@ -124,10 +124,10 @@ describe 'recipes API', type: :request do
           expect(JSON.parse(response.body)).to eq({
             'recipes' => [
               {
-                'id' => recipe_2.id,
-                'author' => display_name_2,
-                'name' => name_2,
-                'time_minutes' => time_minutes_2,
+                'id' => recipe_1.id,
+                'author' => display_name_1,
+                'name' => name_1,
+                'time_minutes' => time_minutes_1,
                 'photo' => photo_url
               }
             ]
