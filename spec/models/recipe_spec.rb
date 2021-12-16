@@ -46,6 +46,9 @@ describe Recipe, type: :model do
 
     describe 'has one attached photo' do
       # TODO
+      describe 'dependent destroy' do
+        # TODO
+      end
     end
   end
 

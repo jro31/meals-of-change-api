@@ -5,7 +5,9 @@ class Recipe < ApplicationRecord
   has_many :recipe_tags, dependent: :destroy
   has_many :tags, through: :recipe_tags
 
-  has_one_attached :photo
+  has_one_attached :photo, dependent: :destroy
+  # TODO - Delete from AWS if a different photo is added, or if the recipe is destroyed
+  # Not sure how, but 'purge' might help - https://edgeapi.rubyonrails.org/classes/ActiveStorage/Attached/One.html#method-i-purge
 
   accepts_nested_attributes_for :ingredients, :steps
 
