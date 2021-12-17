@@ -103,7 +103,7 @@ module Api
       end
 
       def attach_photo
-        @recipe.photo.attach(params[:recipe][:photo_blob_signed_id]) if params[:recipe][:photo_blob_signed_id].present?
+        @recipe.thumbnail_photo.attach(params[:recipe][:thumbnail_photo_blob_signed_id]) if params[:recipe][:thumbnail_photo_blob_signed_id].present?
       end
 
       def set_user

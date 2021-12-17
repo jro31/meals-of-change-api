@@ -13,7 +13,7 @@ class RecipeRepresenter
       ingredients: ingredients_array,
       steps: steps_array,
       tags: tags_array,
-      photo: recipe.photo_url
+      thumbnail_photo: recipe.thumbnail_photo_url
     }
   end
 

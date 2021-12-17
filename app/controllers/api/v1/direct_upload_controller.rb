@@ -2,10 +2,15 @@ module Api
   module V1
     class DirectUploadController < Api::V1::BaseController
       def create
-        authorize Recipe
-        # TODO - Update to upload varying photo sizes (and perhaps have a max-size)
-        response = generate_direct_upload(blob_params)
-        render json: response
+        begin
+          authorize Recipe
+          # TODO - Throw an error unless 'params[:content_type]' is 'jpg/jpeg/gif/png'
+          # Note that this isn't entirely secure, as it'd still be possible for the content_type param to be manipulated before being passed-in
+          response = generate_direct_upload(blob_params)
+          render json: response
+        rescue => e
+          # TODO - Handle this
+        end
       end
 
       private
@@ -24,7 +29,7 @@ module Api
       def create_blob(blob_args)
         blob = ActiveStorage::Blob.create_before_direct_upload!(blob_args.to_h.deep_symbolize_keys)
         photo_id = SecureRandom.uuid # the name of the file will just be a UUID
-        blob.update_attribute(:key, "photos/recipes/#{photo_id}") # will put it in the uploads folder
+        blob.update_attribute(:key, "photos/recipes/#{photo_id}/#{params[:file][:image_size]}")
         blob
       end
 
