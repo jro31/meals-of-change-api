@@ -10,7 +10,7 @@ class RecipesRepresenter
         author: recipe.user.display_name,
         name: recipe.name,
         time_minutes: recipe.time_minutes,
-        thumbnail_photo: recipe.thumbnail_photo_url
+        small_photo: recipe.small_photo_url
       }
     end
   end

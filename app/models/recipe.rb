@@ -27,4 +27,22 @@ class Recipe < ApplicationRecord
       thumbnail_photo.blob.service_url
     end
   end
+
+  def small_photo_url
+    if small_photo.attached?
+      small_photo.blob.service_url
+    end
+  end
+
+  def large_photo_url
+    if large_photo.attached?
+      large_photo.blob.service_url
+    end
+  end
+
+  def full_size_photo_url
+    if full_size_photo.attached?
+      full_size_photo.blob.service_url
+    end
+  end
 end

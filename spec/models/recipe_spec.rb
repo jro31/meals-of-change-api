@@ -44,7 +44,28 @@ describe Recipe, type: :model do
       it { expect(subject.tags.first).to eq(tag) }
     end
 
-    describe 'has one attached photo' do
+    describe 'has one attached thumbnail photo' do
+      # TODO
+      describe 'dependent destroy' do
+        # TODO
+      end
+    end
+
+    describe 'has one attached small photo' do
+      # TODO
+      describe 'dependent destroy' do
+        # TODO
+      end
+    end
+
+    describe 'has one attached large photo' do
+      # TODO
+      describe 'dependent destroy' do
+        # TODO
+      end
+    end
+
+    describe 'has one attached full-size photo' do
       # TODO
       describe 'dependent destroy' do
         # TODO
@@ -83,7 +104,19 @@ describe Recipe, type: :model do
     end
   end
 
-  describe '#photo_url' do
+  describe '#thumbnail_photo_url' do
+    # TODO
+  end
+
+  describe '#small_photo_url' do
+    # TODO
+  end
+
+  describe '#large_photo_url' do
+    # TODO
+  end
+
+  describe '#full_size_photo_url' do
     # TODO
   end
 end

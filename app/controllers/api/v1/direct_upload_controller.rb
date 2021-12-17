@@ -6,6 +6,7 @@ module Api
           authorize Recipe
           # TODO - Throw an error unless 'params[:content_type]' is 'jpg/jpeg/gif/png'
           # Note that this isn't entirely secure, as it'd still be possible for the content_type param to be manipulated before being passed-in
+          # Can the file type be limited on AWS?
           response = generate_direct_upload(blob_params)
           render json: response
         rescue => e
