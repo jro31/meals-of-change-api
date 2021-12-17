@@ -71,7 +71,10 @@ describe RecipeRepresenter do
             name: tag_1_name
           }
         ],
-        photo: nil
+        thumbnail_photo: nil,
+        small_photo: nil,
+        large_photo: nil,
+        full_size_photo: nil
       })
     end
   end

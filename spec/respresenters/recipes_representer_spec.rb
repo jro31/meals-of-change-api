@@ -12,7 +12,7 @@ describe RecipesRepresenter do
   let(:time_minutes_2) { 10 }
   let!(:recipe_2) { create(:recipe, user: user_2, name: name_2, time_minutes: time_minutes_2) }
   let(:photo_url) { 'www.photo-url.com' }
-  before { allow_any_instance_of(Recipe).to receive(:photo_url).and_return(photo_url) }
+  before { allow_any_instance_of(Recipe).to receive(:small_photo_url).and_return(photo_url) }
   describe 'as_json' do
     subject { RecipesRepresenter.new(Recipe.all).as_json }
     it 'returns the correct hash' do
@@ -23,14 +23,14 @@ describe RecipesRepresenter do
             author: display_name_2,
             name: name_2,
             time_minutes: time_minutes_2,
-            photo: photo_url
+            small_photo: photo_url
           },
           {
             id: recipe_1.id,
             author: display_name_1,
             name: name_1,
             time_minutes: time_minutes_1,
-            photo: photo_url
+            small_photo: photo_url
           }
         ]
       )

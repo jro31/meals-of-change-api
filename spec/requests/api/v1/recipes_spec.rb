@@ -16,7 +16,7 @@ describe 'recipes API', type: :request do
       let(:time_minutes_2) { 10 }
       let!(:recipe_2) { create(:recipe, user: user_2, name: name_2, time_minutes: time_minutes_2) }
       let(:photo_url) { 'www.photo-url.com' }
-      before { allow_any_instance_of(Recipe).to receive(:photo_url).and_return(photo_url) }
+      before { allow_any_instance_of(Recipe).to receive(:small_photo_url).and_return(photo_url) }
       it 'returns the recipes' do
         get url
 
@@ -28,14 +28,14 @@ describe 'recipes API', type: :request do
               'author' => display_name_2,
               'name' => name_2,
               'time_minutes' => time_minutes_2,
-              'photo' => photo_url
+              'small_photo' => photo_url
             },
             {
               'id' => recipe_1.id,
               'author' => display_name_1,
               'name' => name_1,
               'time_minutes' => time_minutes_1,
-              'photo' => photo_url
+              'small_photo' => photo_url
             }
           ]
         })
@@ -60,21 +60,21 @@ describe 'recipes API', type: :request do
                 'author' => recipe_8.user.display_name,
                 'name' => recipe_8.name,
                 'time_minutes' => recipe_8.time_minutes,
-                'photo' => photo_url
+                'small_photo' => photo_url
               },
               {
                 'id' => recipe_7.id,
                 'author' => recipe_7.user.display_name,
                 'name' => recipe_7.name,
                 'time_minutes' => recipe_7.time_minutes,
-                'photo' => photo_url
+                'small_photo' => photo_url
               },
               {
                 'id' => recipe_6.id,
                 'author' => recipe_6.user.display_name,
                 'name' => recipe_6.name,
                 'time_minutes' => recipe_6.time_minutes,
-                'photo' => photo_url
+                'small_photo' => photo_url
               }
             ]
           })
@@ -93,21 +93,21 @@ describe 'recipes API', type: :request do
                   'author' => recipe_3.user.display_name,
                   'name' => recipe_3.name,
                   'time_minutes' => recipe_3.time_minutes,
-                  'photo' => photo_url
+                  'small_photo' => photo_url
                 },
                 {
                   'id' => recipe_2.id,
                   'author' => display_name_2,
                   'name' => name_2,
                   'time_minutes' => time_minutes_2,
-                  'photo' => photo_url
+                  'small_photo' => photo_url
                 },
                 {
                   'id' => recipe_1.id,
                   'author' => display_name_1,
                   'name' => name_1,
                   'time_minutes' => time_minutes_1,
-                  'photo' => photo_url
+                  'small_photo' => photo_url
                 }
               ]
             })
@@ -128,7 +128,7 @@ describe 'recipes API', type: :request do
                 'author' => display_name_1,
                 'name' => name_1,
                 'time_minutes' => time_minutes_1,
-                'photo' => photo_url
+                'small_photo' => photo_url
               }
             ]
           })
@@ -162,7 +162,7 @@ describe 'recipes API', type: :request do
                   'author' => display_name_1,
                   'name' => name_1,
                   'time_minutes' => time_minutes_1,
-                  'photo' => photo_url
+                  'small_photo' => photo_url
                 }
               ]
             })
@@ -198,7 +198,7 @@ describe 'recipes API', type: :request do
                   'author' => display_name_1,
                   'name' => name_1,
                   'time_minutes' => time_minutes_1,
-                  'photo' => photo_url
+                  'small_photo' => photo_url
                 }
               ]
             })
@@ -279,7 +279,10 @@ describe 'recipes API', type: :request do
                 'name' => tag.name
               }
             ],
-            'photo' => recipe.photo_url
+            'thumbnail_photo' => recipe.thumbnail_photo_url,
+            'small_photo' => recipe.small_photo_url,
+            'large_photo' => recipe.large_photo_url,
+            'full_size_photo' => recipe.full_size_photo_url
           }
         })
       end
@@ -311,8 +314,17 @@ describe 'recipes API', type: :request do
     let(:url) { '/api/v1/recipes' }
     let(:params) { { recipe: { name: name, time_minutes: time_minutes, preface: preface, ingredients_attributes: [toast, beans], steps_attributes: [step_1, step_2], tags: tags, photo_blob_signed_id: photo_blob_signed_id } } }
     before do
-      allow_any_instance_of(Recipe).to receive_message_chain(:photo, :attach).and_return(true)
-      allow_any_instance_of(Recipe).to receive(:photo_url).and_return(photo_url)
+      allow_any_instance_of(Recipe).to receive_message_chain(:thumbnail_photo, :attach).and_return(true)
+      allow_any_instance_of(Recipe).to receive(:thumbnail_photo_url).and_return(photo_url)
+
+      allow_any_instance_of(Recipe).to receive_message_chain(:small_photo, :attach).and_return(true)
+      allow_any_instance_of(Recipe).to receive(:small_photo_url).and_return(photo_url)
+
+      allow_any_instance_of(Recipe).to receive_message_chain(:large_photo, :attach).and_return(true)
+      allow_any_instance_of(Recipe).to receive(:large_photo_url).and_return(photo_url)
+
+      allow_any_instance_of(Recipe).to receive_message_chain(:full_size_photo, :attach).and_return(true)
+      allow_any_instance_of(Recipe).to receive(:full_size_photo_url).and_return(photo_url)
     end
     context 'user is logged-in' do
       let(:email) { 'user@email.com' }
@@ -354,7 +366,10 @@ describe 'recipes API', type: :request do
               }
             ],
             'tags' => expected_tag_return,
-            'photo' => photo_url
+            'thumbnail_photo' => photo_url,
+            'small_photo' => photo_url,
+            'large_photo' => photo_url,
+            'full_size_photo' => photo_url
           }
         }
       }
