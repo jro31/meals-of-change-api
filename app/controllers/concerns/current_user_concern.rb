@@ -6,8 +6,10 @@ module CurrentUserConcern
   end
 
   def set_current_user
-    if session[:user_id]
-      @current_user = User.find(session[:user_id])
-    end
+    @current_user = session[:user_id] ? User.find(session[:user_id]) : nil
   end
+
+  private
+
+  attr_reader :current_user
 end

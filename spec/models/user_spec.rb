@@ -4,15 +4,23 @@ describe User, type: :model do
   subject { create(:user) }
   it { expect(subject).to be_valid }
 
+  describe 'associations' do
+    describe 'has many recipes' do
+      let!(:recipe) { create(:recipe, user: subject) }
+      it { expect(subject.recipes.first).to eq(recipe) }
+
+      describe 'dependent destroy' do
+        it { expect { subject.destroy }.to change { Recipe.count }.by(-1) }
+      end
+    end
+  end
+
   describe 'validations' do
     describe 'email' do
       let(:email) { 'test@email.com' }
       subject { build(:user, email: email) }
+      it { expect(subject).to be_valid }
       describe 'validates presence of email' do
-        context 'email is present' do
-          it { expect(subject).to be_valid }
-        end
-
         context 'email is not present' do
           let(:email) { nil }
           it 'is invalid with the correct error' do
@@ -39,10 +47,6 @@ describe User, type: :model do
       end
 
       describe 'validates format of email' do
-        context 'email is valid' do
-          it { expect(subject).to be_valid }
-        end
-
         context 'email doesn\'t contain @' do
           let(:email) { 'testemail.com' }
           it 'is invalid with the correct error' do
@@ -88,11 +92,8 @@ describe User, type: :model do
     describe 'password' do
       let(:password) { 'password' }
       subject { build(:user, password: password) }
+      it { expect(subject).to be_valid }
       describe 'validates presence of password' do
-        context 'password is present' do
-          it { expect(subject).to be_valid }
-        end
-
         context 'password is not present' do
           let(:password) { nil }
           it 'is invalid with the correct error' do
@@ -112,6 +113,7 @@ describe User, type: :model do
         end
 
         context 'password is 8 characters' do
+          let(:password) { 'password' }
           it { expect(subject).to be_valid }
         end
       end
@@ -120,11 +122,8 @@ describe User, type: :model do
     describe 'display_name' do
       let(:display_name) { 'DisplayName' }
       subject { build(:user, display_name: display_name) }
+      it { expect(subject).to be_valid }
       describe 'validates presence of display_name' do
-        context 'display_name is present' do
-          it { expect(subject).to be_valid }
-        end
-
         context 'display_name is not present' do
           let(:display_name) { nil }
           it 'is invalid with the correct error' do
