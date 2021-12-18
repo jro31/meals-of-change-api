@@ -47,6 +47,8 @@ jobs:
         with:
           ruby-version: 2.6.3
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       - name: Setup the postgres database
         run: bundle exec rake db:setup
       - name: Run tests
