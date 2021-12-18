@@ -7,6 +7,7 @@ module Api
           # TODO - Throw an error unless 'params[:content_type]' is 'jpg/jpeg/gif/png'
           # Note that this isn't entirely secure, as it'd still be possible for the content_type param to be manipulated before being passed-in
           # Can the file type be limited on AWS?
+
           response = generate_direct_upload(blob_params)
           render json: response
         rescue => e
@@ -29,8 +30,8 @@ module Api
 
       def create_blob(blob_args)
         blob = ActiveStorage::Blob.create_before_direct_upload!(blob_args.to_h.deep_symbolize_keys)
-        photo_id = SecureRandom.uuid # the name of the file will just be a UUID
-        blob.update_attribute(:key, "photos/recipes/#{photo_id}/#{params[:file][:image_size]}")
+        photo_id = SecureRandom.uuid
+        blob.update_attribute(:key, "photos/recipes/#{params[:file][:image_size]}/#{photo_id}")
         blob
       end
 
