@@ -10,6 +10,7 @@ env:
   POSTGRES_USER: postgres
   POSTGRES_HOST: localhost
   RAILS_ENV: test
+  AWS_REGION: us-east-1
 
 name: Ruby
 
