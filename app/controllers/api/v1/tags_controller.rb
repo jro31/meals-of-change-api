@@ -9,7 +9,7 @@ module Api
                                    .group('tags.id')
                                    .order('count(tags.id) DESC')
                                    .limit(params[:limit])
-          render json: { tags: @tags.pluck(:name) }, status: :ok
+          render json: { tags: @tags.pluck(:name).map(&:capitalize) }, status: :ok
         rescue => e
           @skip_after_action = true
           render json: {

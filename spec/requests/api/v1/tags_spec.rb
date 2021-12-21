@@ -29,7 +29,7 @@ describe 'tags API', type: :request do
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to eq({
           'tags' => [
-            'healthy', 'main', 'thai food', 'smoothie'
+            'Healthy', 'Main', 'Thai food', 'Smoothie'
           ]
         })
       end
@@ -42,7 +42,7 @@ describe 'tags API', type: :request do
           expect(response).to have_http_status(:ok)
           expect(JSON.parse(response.body)).to eq({
             'tags' => [
-              'healthy', 'main'
+              'Healthy', 'Main'
             ]
           })
         end
