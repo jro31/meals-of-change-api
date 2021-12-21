@@ -80,17 +80,21 @@ module Api
       def filter_recipes
         if params[:user_id]
           @recipes = policy_scope(Recipe).where(user: User.find(params[:user_id]))
+                                         .order(created_at: :desc)
                                          .limit(params[:limit]).offset(params[:offset])
         elsif params[:tag_name]
           raise 'tag not found' unless tag = Tag.find_by(name: params[:tag_name].downcase)
           @recipes = policy_scope(Recipe).joins(:tags)
                                          .where(tags: { id: tag.id })
+                                         .order(created_at: :desc)
                                          .limit(params[:limit]).offset(params[:offset])
         elsif params[:query]
           # TODO - Complete this
           # Should search recipe name, ingredient food, and tag name
         else
-          @recipes = policy_scope(Recipe).limit(params[:limit]).offset(params[:offset])
+          @recipes = policy_scope(Recipe).order(created_at: :desc)
+                                         .limit(params[:limit])
+                                         .offset(params[:offset])
         end
       end
 

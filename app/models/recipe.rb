@@ -20,8 +20,6 @@ class Recipe < ApplicationRecord
   # TODO - Add validation that cannot have more than 15 tags
   # TODO - Add validation that the preface cannot be more than 1000(?) characters (it should match a limit on the front-end)
 
-  default_scope { order(created_at: :desc) } # TODO - Remove this; just sort this way where needed. This is a pain when calling, for example, Recipe.last and it returns the first recipe
-
   def thumbnail_photo_url
     if thumbnail_photo.attached?
       thumbnail_photo.blob.service_url
