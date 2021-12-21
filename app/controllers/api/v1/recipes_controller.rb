@@ -79,15 +79,19 @@ module Api
 
       def filter_recipes
         if params[:user_id]
-          @recipes = policy_scope(Recipe).where(user: User.find(params[:user_id]))
+          user = User.find(params[:user_id])
+          @recipes = policy_scope(Recipe).where(user: user)
                                          .order(created_at: :desc)
                                          .limit(params[:limit]).offset(params[:offset])
+          @filter_title = "#{user.display_name}'s Recipes"
         elsif params[:tag_name]
           raise 'tag not found' unless tag = Tag.find_by(name: params[:tag_name].downcase)
+
           @recipes = policy_scope(Recipe).joins(:tags)
                                          .where(tags: { id: tag.id })
                                          .order(created_at: :desc)
                                          .limit(params[:limit]).offset(params[:offset])
+          @filter_title = "#{tag.name.split.map(&:capitalize).join(' ')} Recipes"
         elsif params[:query]
           # TODO - Complete this
           # Should search recipe name, ingredient food, and tag name
@@ -102,7 +106,7 @@ module Api
         if ActiveModel::Type::Boolean.new.cast(params[:ids_array])
           { recipe_ids: @recipes.unscoped.pluck(:id) }
         else
-          { recipes: RecipesRepresenter.new(@recipes).as_json }
+          { recipes: RecipesRepresenter.new(@recipes).as_json, filter_title: @filter_title || '' }
         end
       end
 

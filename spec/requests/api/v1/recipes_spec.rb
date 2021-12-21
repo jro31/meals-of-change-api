@@ -37,7 +37,8 @@ describe 'recipes API', type: :request do
               'time_minutes' => time_minutes_1,
               'small_photo' => photo_url
             }
-          ]
+          ],
+          'filter_title' => ''
         })
       end
 
@@ -76,7 +77,8 @@ describe 'recipes API', type: :request do
                 'time_minutes' => recipe_6.time_minutes,
                 'small_photo' => photo_url
               }
-            ]
+            ],
+            'filter_title' => ''
           })
         end
 
@@ -109,7 +111,8 @@ describe 'recipes API', type: :request do
                   'time_minutes' => time_minutes_1,
                   'small_photo' => photo_url
                 }
-              ]
+              ],
+              'filter_title' => ''
             })
           end
         end
@@ -130,7 +133,8 @@ describe 'recipes API', type: :request do
                 'time_minutes' => time_minutes_1,
                 'small_photo' => photo_url
               }
-            ]
+            ],
+            'filter_title' => ''
           })
         end
       end
@@ -164,7 +168,8 @@ describe 'recipes API', type: :request do
                   'time_minutes' => time_minutes_1,
                   'small_photo' => photo_url
                 }
-              ]
+              ],
+              'filter_title' => "#{user_1.display_name}'s Recipes"
             })
           end
         end
@@ -200,7 +205,8 @@ describe 'recipes API', type: :request do
                   'time_minutes' => time_minutes_1,
                   'small_photo' => photo_url
                 }
-              ]
+              ],
+              'filter_title' => "Garlic Bread Recipes"
             })
           end
         end
@@ -228,7 +234,8 @@ describe 'recipes API', type: :request do
 
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to eq({
-          'recipes' => []
+          'recipes' => [],
+          'filter_title' => ''
         })
       end
     end
