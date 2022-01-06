@@ -8,7 +8,7 @@ module Api
       # GET /api/v1/recipes?ids_array=true
       # GET /api/v1/recipes?user_id=1
       # GET /api/v1/recipes?tag_name=thai+food
-      # TODO - GET /api/v1/recipes?query=some+query
+      # GET /api/v1/recipes?query=garlic+bread
       def index
         begin
           filter_recipes
@@ -82,19 +82,23 @@ module Api
           user = User.find(params[:user_id])
           @recipes = policy_scope(Recipe).where(user: user)
                                          .order(created_at: :desc)
-                                         .limit(params[:limit]).offset(params[:offset])
-          @filter_title = "#{user.display_name}'s Recipes"
+                                         .limit(params[:limit])
+                                         .offset(params[:offset])
+          @filter_title = "#{user.display_name}'s recipes"
         elsif params[:tag_name]
           raise 'tag not found' unless tag = Tag.find_by(name: params[:tag_name].downcase)
 
           @recipes = policy_scope(Recipe).joins(:tags)
                                          .where(tags: { id: tag.id })
                                          .order(created_at: :desc)
-                                         .limit(params[:limit]).offset(params[:offset])
-          @filter_title = "#{tag.name.split.map(&:capitalize).join(' ')} Recipes"
+                                         .limit(params[:limit])
+                                         .offset(params[:offset])
+          @filter_title = "#{tag.name.split.map(&:capitalize).join(' ')} recipes"
         elsif params[:query]
-          # TODO - Complete this
-          # Should search recipe name, ingredient food, and tag name
+          @recipes = policy_scope(Recipe).search_by_recipe_name_ingredient_food_and_tag_name(params[:query])
+                                         .limit(params[:limit])
+                                         .offset(params[:offset])
+          @filter_title = "\"#{params[:query]}\" recipes"
         else
           @recipes = policy_scope(Recipe).order(created_at: :desc)
                                          .limit(params[:limit])

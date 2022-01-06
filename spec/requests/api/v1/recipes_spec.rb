@@ -169,7 +169,7 @@ describe 'recipes API', type: :request do
                   'small_photo' => photo_url
                 }
               ],
-              'filter_title' => "#{user_1.display_name}'s Recipes"
+              'filter_title' => "#{user_1.display_name}'s recipes"
             })
           end
         end
@@ -206,7 +206,7 @@ describe 'recipes API', type: :request do
                   'small_photo' => photo_url
                 }
               ],
-              'filter_title' => "Garlic Bread Recipes"
+              'filter_title' => "Garlic Bread recipes"
             })
           end
         end
@@ -224,7 +224,40 @@ describe 'recipes API', type: :request do
       end
 
       context 'query param is passed-in' do
-        # TODO
+        context 'recipes exist' do
+          let(:params) { "query=garlic+bread" }
+          it 'returns the garlic bread recipe' do
+            get url
+
+            expect(response).to have_http_status(:ok)
+            expect(JSON.parse(response.body)).to eq({
+              'recipes' => [
+                {
+                  'id' => recipe_1.id,
+                  'author' => display_name_1,
+                  'name' => name_1,
+                  'time_minutes' => time_minutes_1,
+                  'small_photo' => photo_url
+                }
+              ],
+              'filter_title' => '"garlic bread" recipes'
+            })
+          end
+        end
+
+        context 'no recipes exist' do
+          let(:params) { "query=Pizza" }
+
+          it 'returns an empty array' do
+            get url
+
+            expect(response).to have_http_status(:ok)
+              expect(JSON.parse(response.body)).to eq({
+                'recipes' => [],
+                'filter_title' => '"Pizza" recipes'
+              })
+          end
+        end
       end
     end
 
