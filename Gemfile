@@ -32,6 +32,7 @@ gem 'bootsnap', '>= 1.4.2', require: false
 
 gem 'pundit'
 gem 'aws-sdk-s3', '~> 1.109'
+gem 'pg_search'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
