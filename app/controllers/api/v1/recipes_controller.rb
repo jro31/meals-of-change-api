@@ -111,10 +111,8 @@ module Api
       end
 
       def attach_photo
-        @recipe.thumbnail_photo.attach(params[:recipe][:thumbnail_photo_blob_signed_id]) if params[:recipe][:thumbnail_photo_blob_signed_id].present?
         @recipe.small_photo.attach(params[:recipe][:small_photo_blob_signed_id]) if params[:recipe][:small_photo_blob_signed_id].present?
         @recipe.large_photo.attach(params[:recipe][:large_photo_blob_signed_id]) if params[:recipe][:large_photo_blob_signed_id].present?
-        @recipe.full_size_photo.attach(params[:recipe][:full_size_photo_blob_signed_id]) if params[:recipe][:full_size_photo_blob_signed_id].present?
       end
 
       def set_user

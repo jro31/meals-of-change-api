@@ -10,6 +10,8 @@ module Api
 
           raise 'Incorrect username/password' unless user
 
+          # TODO - Currently the cookie is created for a "session" - Should it instead be created for an amount of time?
+          # (also make any updates in the registrations controller)
           session[:user_id] = user.id # This creates a cookie...
           render json: {
             logged_in: true,

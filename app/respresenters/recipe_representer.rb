@@ -13,10 +13,8 @@ class RecipeRepresenter
       ingredients: ingredients_array,
       steps: steps_array,
       tags: tags_array,
-      thumbnail_photo: recipe.thumbnail_photo_url,
       small_photo: recipe.small_photo_url,
       large_photo: recipe.large_photo_url,
-      full_size_photo: recipe.full_size_photo_url,
     }
   end
 
