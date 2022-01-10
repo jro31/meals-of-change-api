@@ -77,6 +77,24 @@ describe Recipe, type: :model do
         end
       end
     end
+
+    describe 'preface' do
+      subject { build(:recipe, preface: preface) }
+      describe 'validates length of preface' do
+        context 'preface is 2500 characters' do
+          let(:preface) { Faker::Lorem.characters(number: 2500) }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'preface is 2501 characters' do
+          let(:preface) { Faker::Lorem.characters(number: 2501) }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:preface]).to include('is too long (maximum is 2500 characters)')
+          end
+        end
+      end
+    end
   end
 
   describe '#search_by_recipe_name_ingredient_food_and_tag_name' do

@@ -15,11 +15,11 @@ class Recipe < ApplicationRecord
   accepts_nested_attributes_for :ingredients, :steps
 
   validates_presence_of :name
+  validates_length_of :preface, maximum: 2500
   # TODO - Add validation that at least one ingredient must exist? (will make testing a pain)
   # TODO - Add validation that at least one step must exist? (will make testing a pain)
   # TODO - Add validation that cannot have more than 9 tags
   # TODO - Add validation that name cannot be more than 60 characters. Update front-end to reflect this.
-  # TODO - Add validation that the preface cannot be more than 1000(?) characters (it should match a limit on the front-end)
 
   pg_search_scope :search_by_recipe_name_ingredient_food_and_tag_name,
     against: { name: 'A' },
