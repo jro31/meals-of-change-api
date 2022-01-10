@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :tag do
-    name { 'Thai' }
+    name { Faker::Alphanumeric.alphanumeric(number: 30) }
   end
 end

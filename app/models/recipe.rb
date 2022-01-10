@@ -16,9 +16,9 @@ class Recipe < ApplicationRecord
 
   validates_presence_of :name
   validates_length_of :preface, maximum: 2500
+  validate :validate_number_of_tags
   # TODO - Add validation that at least one ingredient must exist? (will make testing a pain)
   # TODO - Add validation that at least one step must exist? (will make testing a pain)
-  # TODO - Add validation that cannot have more than 9 tags
   # TODO - Add validation that name cannot be more than 60 characters. Update front-end to reflect this.
 
   pg_search_scope :search_by_recipe_name_ingredient_food_and_tag_name,
@@ -41,5 +41,13 @@ class Recipe < ApplicationRecord
     if large_photo.attached?
       large_photo.blob.service_url
     end
+  end
+
+  private
+
+  def validate_number_of_tags
+    return if tags.count <= 9
+
+    errors.add(:base, 'cannot have more than 9 tags')
   end
 end

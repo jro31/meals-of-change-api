@@ -95,6 +95,24 @@ describe Recipe, type: :model do
         end
       end
     end
+
+    describe 'tags' do
+      subject { build(:recipe) }
+      describe '#validate_number_of_tags' do
+        context 'recipe has 9 tags' do
+          let!(:recipe_tags) { create_list(:recipe_tag, 9, recipe: subject) }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'recipe has 10 tags' do
+          let!(:recipe_tags) { create_list(:recipe_tag, 10, recipe: subject) }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:base]).to include('cannot have more than 9 tags')
+          end
+        end
+      end
+    end
   end
 
   describe '#search_by_recipe_name_ingredient_food_and_tag_name' do
