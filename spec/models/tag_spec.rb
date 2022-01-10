@@ -59,6 +59,34 @@ describe Tag, type: :model do
           end
         end
       end
+
+      describe 'validates length of name' do
+        context 'name is two characters' do
+          let(:name) { 'Hi' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:name]).to include('is too short (minimum is 3 characters)')
+          end
+        end
+
+        context 'name is three characters' do
+          let(:name) { 'Wut' }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'name is thirty characters' do
+          let(:name) { 'There once was a man who lived' }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'name is thirty-one characters' do
+          let(:name) { 'There once was a wolf who lived' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:name]).to include('is too long (maximum is 30 characters)')
+          end
+        end
+      end
     end
   end
 end
