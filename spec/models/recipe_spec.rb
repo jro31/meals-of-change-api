@@ -46,14 +46,14 @@ describe Recipe, type: :model do
 
     describe 'has one attached small photo' do
       # TODO
-      describe 'dependent destroy' do
+      describe 'destroying the recipes purges the photo' do
         # TODO
       end
     end
 
     describe 'has one attached large photo' do
       # TODO
-      describe 'dependent destroy' do
+      describe 'destroying the recipes purges the photo' do
         # TODO
       end
     end
