@@ -11,8 +11,8 @@ module Api
           response = generate_direct_upload(blob_params)
           render json: response
         rescue => e
-          console.log('🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀')
-          console.log(e.message)
+          puts '🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀'
+          puts e.message
           # TODO - Handle this
         end
       end
