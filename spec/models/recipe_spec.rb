@@ -45,15 +45,18 @@ describe Recipe, type: :model do
     end
 
     describe 'has many user recipe bookmarks' do
-      # TODO
+      let!(:user_recipe_bookmark) { create(:user_recipe_bookmark, recipe: subject) }
+      it { expect(subject.user_recipe_bookmarks.first).to eq(user_recipe_bookmark) }
 
       describe 'dependent destroy' do
-        # TODO
+        it { expect { subject.destroy }.to change { UserRecipeBookmark.count }.by(-1) }
       end
     end
 
     describe 'has many bookmarked users' do
-      # TODO
+      let(:user) { create(:user) }
+      let!(:user_recipe_bookmark) { create(:user_recipe_bookmark, user: user, recipe: subject) }
+      it { expect(subject.bookmarked_users.first).to eq(user) }
     end
 
     describe 'has one attached small photo' do
