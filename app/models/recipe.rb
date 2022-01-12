@@ -6,6 +6,8 @@ class Recipe < ApplicationRecord
   has_many :steps, dependent: :destroy
   has_many :recipe_tags, dependent: :destroy
   has_many :tags, through: :recipe_tags
+  has_many :user_recipe_bookmarks, dependent: :destroy
+  has_many :bookmarked_users, through: :user_recipe_bookmarks, source: :user
 
   has_one_attached :small_photo
   has_one_attached :large_photo

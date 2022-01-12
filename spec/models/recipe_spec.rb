@@ -44,6 +44,18 @@ describe Recipe, type: :model do
       it { expect(subject.tags.first).to eq(tag) }
     end
 
+    describe 'has many user recipe bookmarks' do
+      # TODO
+
+      describe 'dependent destroy' do
+        # TODO
+      end
+    end
+
+    describe 'has many bookmarked users' do
+      # TODO
+    end
+
     describe 'has one attached small photo' do
       # TODO
       describe 'destroying the recipes purges the photo' do

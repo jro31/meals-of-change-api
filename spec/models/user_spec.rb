@@ -13,6 +13,18 @@ describe User, type: :model do
         it { expect { subject.destroy }.to change { Recipe.count }.by(-1) }
       end
     end
+
+    describe 'has many user recipe bookmarks' do
+      # TODO
+
+      describe 'dependent destroy' do
+        # TODO
+      end
+    end
+
+    describe 'has many bookmarked recipes' do
+      # TODO
+    end
   end
 
   describe 'validations' do
