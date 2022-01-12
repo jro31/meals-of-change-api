@@ -6,6 +6,9 @@ module Api
         begin
           @bookmark = UserRecipeBookmark.new(user_recipe_bookmark_params)
           authorize @bookmark
+
+          set_user
+
           @bookmark.save!
 
           render json: {
@@ -13,9 +16,10 @@ module Api
           }, status: :created
         rescue Pundit::NotAuthorizedError
           render json: {
-            error_message: 'User must be signed-in to create a recipe'
+            error_message: 'User must be signed-in to bookmark a recipe'
           }, status: :unauthorized
         rescue => e
+          @skip_after_action = true
           render json: {
             error_message: e.message
           }, status: :unprocessable_entity
@@ -30,7 +34,11 @@ module Api
       private
 
       def user_recipe_bookmark_params
-        params.require(:user_recipe_bookmark).permit(:user_id, :recipe_id)
+        params.require(:user_recipe_bookmark).permit(:recipe_id)
+      end
+
+      def set_user
+        @bookmark.user = current_user
       end
     end
   end
