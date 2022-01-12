@@ -84,6 +84,8 @@ ActiveRecord::Schema.define(version: 2022_01_12_170009) do
   create_table "user_recipe_bookmarks", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "recipe_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["recipe_id"], name: "index_user_recipe_bookmarks_on_recipe_id"
     t.index ["user_id"], name: "index_user_recipe_bookmarks_on_user_id"
   end
