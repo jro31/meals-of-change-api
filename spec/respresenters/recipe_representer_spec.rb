@@ -28,9 +28,9 @@ describe RecipeRepresenter do
   let(:tag_2) { create(:tag, name: tag_2_name) }
   let!(:tag_2_recipe_tag) { create(:recipe_tag, recipe: recipe, tag: tag_2) }
   describe 'as_json' do
-    subject { RecipeRepresenter.new(recipe).as_json }
-    it 'returns the correct hash' do
-      expect(subject).to eq({
+    subject { RecipeRepresenter.new(recipe, current_user).as_json }
+    let(:expected_return) {
+      {
         id: recipe.id,
         user: {
           id: user.id,
@@ -73,7 +73,32 @@ describe RecipeRepresenter do
         ],
         small_photo: nil,
         large_photo: nil,
-      })
+        bookmark_id: expected_bookmark_id
+      }
+    }
+    let(:expected_bookmark_id) { nil }
+    context 'user is logged-in' do
+      let(:current_user) { create(:user) }
+      context 'recipe is bookmarked' do
+        let!(:bookmark) { create(:user_recipe_bookmark, user: current_user, recipe: recipe) }
+        let(:expected_bookmark_id) { bookmark.id }
+        it 'returns the correct hash' do
+          expect(subject).to eq(expected_return)
+        end
+      end
+
+      context 'recipe is not bookmarked' do
+        it 'returns the correct hash' do
+          expect(subject).to eq(expected_return)
+        end
+      end
+    end
+
+    context 'user is not logged-in' do
+      let(:current_user) { nil }
+      it 'returns the correct hash' do
+        expect(subject).to eq(expected_return)
+      end
     end
   end
 end

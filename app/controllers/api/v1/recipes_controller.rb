@@ -31,7 +31,7 @@ module Api
           authorize recipe
 
           render json: {
-            recipe: RecipeRepresenter.new(recipe).as_json
+            recipe: RecipeRepresenter.new(recipe, current_user).as_json
           }, status: :ok
         rescue => e
           @skip_after_action = true

@@ -285,11 +285,8 @@ describe 'recipes API', type: :request do
       let!(:step) { create(:step, recipe: recipe) }
       let(:tag) { create(:tag) }
       let!(:recipe_tag) { create(:recipe_tag, recipe: recipe, tag: tag) }
-      it 'returns the recipe' do
-        get url
-
-        expect(response).to have_http_status(:ok)
-        expect(JSON.parse(response.body)).to eq({
+      let(:expected_return) {
+        {
           'recipe' => {
             'id' => recipe.id,
             'user' => {
@@ -321,8 +318,42 @@ describe 'recipes API', type: :request do
             ],
             'small_photo' => recipe.small_photo_url,
             'large_photo' => recipe.large_photo_url,
+            'bookmark_id' => expected_bookmark_id,
           }
-        })
+        }
+      }
+      let(:expected_bookmark_id) { nil }
+
+      context 'user is logged-in' do
+        include_context 'login'
+        context 'recipe is bookmarked' do
+          let!(:bookmark) { create(:user_recipe_bookmark, user: current_user, recipe: recipe) }
+          let(:expected_bookmark_id) { bookmark.id }
+          it 'returns the recipe' do
+            get url
+
+            expect(response).to have_http_status(:ok)
+            expect(JSON.parse(response.body)).to eq(expected_return)
+          end
+        end
+
+        context 'recipe is not bookmarked' do
+          it 'returns the recipe' do
+            get url
+
+            expect(response).to have_http_status(:ok)
+            expect(JSON.parse(response.body)).to eq(expected_return)
+          end
+        end
+      end
+
+      context 'user is not logged-in' do
+        it 'returns the recipe' do
+          get url
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)).to eq(expected_return)
+        end
       end
     end
 
@@ -398,6 +429,7 @@ describe 'recipes API', type: :request do
             'tags' => expected_tag_return,
             'small_photo' => photo_url,
             'large_photo' => photo_url,
+            'bookmark_id' => nil,
           }
         }
       }
