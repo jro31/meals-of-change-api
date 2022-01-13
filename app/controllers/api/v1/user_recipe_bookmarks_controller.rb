@@ -26,6 +26,25 @@ module Api
         end
       end
 
+      # GET /api/v1/bookmark_id
+      def bookmark_id
+        begin
+          authorize UserRecipeBookmark
+
+          render json: {
+            bookmark_id: UserRecipeBookmark.find_by(user: current_user, recipe: params[:recipe_id])&.id
+          }, status: :ok
+        rescue Pundit::NotAuthorizedError => e
+          render json: {
+            error_message: e.message
+          }, status: :unauthorized
+        rescue => e
+          render json: {
+            error_message: e.message
+          }, status: :unprocessable_entity
+        end
+      end
+
       # DELETE /api/v1/user_recipe_bookmarks/:id
       def destroy
         begin

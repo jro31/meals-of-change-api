@@ -107,6 +107,49 @@ describe 'user_recipe_bookmarks API', type: :request do
     end
   end
 
+  describe 'GET /api/v1/bookmark_id' do
+    let(:recipe) { create(:recipe) }
+    let(:url) { '/api/v1/bookmark_id' }
+    let(:params) { { recipe_id: recipe.id } }
+
+    context 'user is logged-in' do
+      include_context 'login'
+      context 'user recipe bookmark exists' do
+        let!(:user_recipe_bookmark) { create(:user_recipe_bookmark, user: current_user, recipe: recipe) }
+        it 'returns the user recipe bookmark id' do
+          get url, params: params
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)).to eq({
+            'bookmark_id' => user_recipe_bookmark.id
+          })
+        end
+      end
+
+      context 'user recipe bookmark does not exist' do
+        it 'returns nil' do
+          get url, params: params
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)).to eq({
+            'bookmark_id' => nil
+          })
+        end
+      end
+    end
+
+    context 'user is not logged-in' do
+      it 'returns unauthorized' do
+        get url, params: params
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(JSON.parse(response.body)).to eq({
+          'error_message' => 'not allowed to bookmark_id? this Class'
+        })
+      end
+    end
+  end
+
   describe 'DELETE /api/v1/user_recipe_bookmarks/:id' do
     let(:user) { create(:user) }
     let(:recipe) { create(:recipe) }

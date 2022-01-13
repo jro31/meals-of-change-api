@@ -3,6 +3,10 @@ class UserRecipeBookmarkPolicy < ApplicationPolicy
     !!user
   end
 
+  def bookmark_id?
+    !!user
+  end
+
   def destroy?
     !!user && record.user == user
   end
