@@ -28,77 +28,54 @@ describe RecipeRepresenter do
   let(:tag_2) { create(:tag, name: tag_2_name) }
   let!(:tag_2_recipe_tag) { create(:recipe_tag, recipe: recipe, tag: tag_2) }
   describe 'as_json' do
-    subject { RecipeRepresenter.new(recipe, current_user).as_json }
-    let(:expected_return) {
-      {
-        id: recipe.id,
-        user: {
-          id: user.id,
-          display_name: display_name
-        },
-        name: name,
-        time_minutes: time_minutes,
-        preface: preface,
-        ingredients: [
-          {
-            amount: amount,
-            food: food,
-            preparation: preparation,
-            optional: optional
-          }
-        ],
-        steps: [
-          {
-            position: step_1_position,
-            instructions: step_1_instructions
+    subject { RecipeRepresenter.new(recipe).as_json }
+    it 'returns the correct hash' do
+      expect(subject).to eq(
+        {
+          id: recipe.id,
+          user: {
+            id: user.id,
+            display_name: display_name
           },
-          {
-            position: step_2_position,
-            instructions: step_2_instructions
-          },
-          {
-            position: step_3_position,
-            instructions: step_3_instructions
-          }
-        ],
-        tags: [
-          {
-            id: tag_2.id,
-            name: tag_2_name
-          },
-          {
-            id: tag_1.id,
-            name: tag_1_name
-          }
-        ],
-        small_photo: nil,
-        large_photo: nil,
-        bookmark_id: expected_bookmark_id
-      }
-    }
-    let(:expected_bookmark_id) { nil }
-    context 'user is logged-in' do
-      let(:current_user) { create(:user) }
-      context 'recipe is bookmarked' do
-        let!(:bookmark) { create(:user_recipe_bookmark, user: current_user, recipe: recipe) }
-        let(:expected_bookmark_id) { bookmark.id }
-        it 'returns the correct hash' do
-          expect(subject).to eq(expected_return)
-        end
-      end
-
-      context 'recipe is not bookmarked' do
-        it 'returns the correct hash' do
-          expect(subject).to eq(expected_return)
-        end
-      end
-    end
-
-    context 'user is not logged-in' do
-      let(:current_user) { nil }
-      it 'returns the correct hash' do
-        expect(subject).to eq(expected_return)
-      end
+          name: name,
+          time_minutes: time_minutes,
+          preface: preface,
+          ingredients: [
+            {
+              amount: amount,
+              food: food,
+              preparation: preparation,
+              optional: optional
+            }
+          ],
+          steps: [
+            {
+              position: step_1_position,
+              instructions: step_1_instructions
+            },
+            {
+              position: step_2_position,
+              instructions: step_2_instructions
+            },
+            {
+              position: step_3_position,
+              instructions: step_3_instructions
+            }
+          ],
+          tags: [
+            {
+              id: tag_2.id,
+              name: tag_2_name
+            },
+            {
+              id: tag_1.id,
+              name: tag_1_name
+            }
+          ],
+          small_photo: nil,
+          large_photo: nil,
+        }
+      )
     end
   end
 end
