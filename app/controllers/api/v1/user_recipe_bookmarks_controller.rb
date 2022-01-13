@@ -28,7 +28,21 @@ module Api
 
       # DELETE /api/v1/user_recipe_bookmarks/:id
       def destroy
-        # TODO
+        begin
+          @bookmark = UserRecipeBookmark.find(params[:id])
+          authorize @bookmark
+
+          @bookmark.destroy!
+          head :no_content
+        rescue Pundit::NotAuthorizedError => e
+          render json: {
+            error_message: e.message
+          }, status: :unauthorized
+        rescue => e
+          render json: {
+            error_message: e.message
+          }, status: :unprocessable_entity
+        end
       end
 
       private

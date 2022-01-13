@@ -6,10 +6,7 @@ describe 'user_recipe_bookmarks API', type: :request do
     let(:url) { '/api/v1/user_recipe_bookmarks' }
     let(:params) { { user_recipe_bookmark: { recipe_id: recipe.id } } }
     context 'user is logged-in' do
-      let(:email) { 'user@email.com' }
-      let(:password) { 'password' }
-      let!(:user) { create(:user, email: email, password: password) }
-      before { post '/api/v1/sessions', params: { user: { email: email, password: password } } }
+      include_context 'login'
       it 'creates a user recipe bookmark' do
         expect { post url, params: params }.to change { UserRecipeBookmark.count }.by(1)
 
@@ -18,7 +15,7 @@ describe 'user_recipe_bookmarks API', type: :request do
           {
             'user_recipe_bookmark' => {
               'id' => UserRecipeBookmark.last.id,
-              'user_id' => user.id,
+              'user_id' => current_user.id,
               'recipe_id' => recipe.id
             }
           }
@@ -82,7 +79,7 @@ describe 'user_recipe_bookmarks API', type: :request do
       end
 
       context 'association already exists' do
-        let!(:existing_user_recipe_bookmark) { create(:user_recipe_bookmark, user: user, recipe: recipe) }
+        let!(:existing_user_recipe_bookmark) { create(:user_recipe_bookmark, user: current_user, recipe: recipe) }
         it 'does not create a user recipe bookmark' do
           expect { post url, params: params }.to change { UserRecipeBookmark.count }.by(0)
 
@@ -111,6 +108,46 @@ describe 'user_recipe_bookmarks API', type: :request do
   end
 
   describe 'DELETE /api/v1/user_recipe_bookmarks/:id' do
-    # TODO
+    let(:user) { create(:user) }
+    let(:recipe) { create(:recipe) }
+    let!(:user_recipe_bookmark) { create(:user_recipe_bookmark, user: user, recipe: recipe) }
+    let(:url) { "/api/v1/user_recipe_bookmarks/#{user_recipe_bookmark.id}" }
+    context 'user is logged-in' do
+      include_context 'login'
+      context 'current user is the user recipe bookmark user' do
+        let(:user) { current_user }
+        it 'destroys the user recipe bookmark' do
+          expect { delete url }.to change { UserRecipeBookmark.count }.by(-1)
+
+          expect(response).to have_http_status(:no_content)
+        end
+      end
+
+      context 'current user is not the user recipe bookmark user' do
+        it 'does not destroy the user recipe bookmark' do
+          expect { delete url }.to change { UserRecipeBookmark.count }.by(0)
+
+          expect(response).to have_http_status(:unauthorized)
+          expect(JSON.parse(response.body)).to eq(
+            {
+              'error_message' => 'not allowed to destroy? this UserRecipeBookmark'
+            }
+          )
+        end
+      end
+    end
+
+    context 'user is not logged-in' do
+      it 'does not destroy the user recipe bookmark' do
+        expect { delete url }.to change { UserRecipeBookmark.count }.by(0)
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(JSON.parse(response.body)).to eq(
+          {
+            'error_message' => 'not allowed to destroy? this UserRecipeBookmark'
+          }
+        )
+      end
+    end
   end
 end

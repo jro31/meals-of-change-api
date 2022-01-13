@@ -10,6 +10,6 @@ class UserRecipeBookmarkPolicy < ApplicationPolicy
   end
 
   def destroy?
-    # TODO
+    !!user && record.user == user
   end
 end

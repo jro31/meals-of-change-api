@@ -359,16 +359,14 @@ describe 'recipes API', type: :request do
       allow_any_instance_of(Recipe).to receive(:large_photo_url).and_return(photo_url)
     end
     context 'user is logged-in' do
-      let(:email) { 'user@email.com' }
-      let(:password) { 'password' }
-      let!(:user) { create(:user, email: email, password: password) }
+      include_context 'login'
       let(:expected_return) {
         {
           'recipe' => {
             'id' => Recipe.last.id,
             'user' => {
-              'id' => user.id,
-              'display_name' => user.display_name
+              'id' => current_user.id,
+              'display_name' => current_user.display_name
             },
             'name' => name,
             'time_minutes' => time_minutes,
@@ -403,7 +401,6 @@ describe 'recipes API', type: :request do
           }
         }
       }
-      before { post '/api/v1/sessions', params: { user: { email: email, password: password } } }
       context 'recipe has no tags' do
         let(:expected_tag_return) { [] }
         it 'creates a new recipe' do
