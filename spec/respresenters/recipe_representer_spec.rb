@@ -30,50 +30,52 @@ describe RecipeRepresenter do
   describe 'as_json' do
     subject { RecipeRepresenter.new(recipe).as_json }
     it 'returns the correct hash' do
-      expect(subject).to eq({
-        id: recipe.id,
-        user: {
-          id: user.id,
-          display_name: display_name
-        },
-        name: name,
-        time_minutes: time_minutes,
-        preface: preface,
-        ingredients: [
-          {
-            amount: amount,
-            food: food,
-            preparation: preparation,
-            optional: optional
-          }
-        ],
-        steps: [
-          {
-            position: step_1_position,
-            instructions: step_1_instructions
+      expect(subject).to eq(
+        {
+          id: recipe.id,
+          user: {
+            id: user.id,
+            display_name: display_name
           },
-          {
-            position: step_2_position,
-            instructions: step_2_instructions
-          },
-          {
-            position: step_3_position,
-            instructions: step_3_instructions
-          }
-        ],
-        tags: [
-          {
-            id: tag_2.id,
-            name: tag_2_name
-          },
-          {
-            id: tag_1.id,
-            name: tag_1_name
-          }
-        ],
-        small_photo: nil,
-        large_photo: nil,
-      })
+          name: name,
+          time_minutes: time_minutes,
+          preface: preface,
+          ingredients: [
+            {
+              amount: amount,
+              food: food,
+              preparation: preparation,
+              optional: optional
+            }
+          ],
+          steps: [
+            {
+              position: step_1_position,
+              instructions: step_1_instructions
+            },
+            {
+              position: step_2_position,
+              instructions: step_2_instructions
+            },
+            {
+              position: step_3_position,
+              instructions: step_3_instructions
+            }
+          ],
+          tags: [
+            {
+              id: tag_2.id,
+              name: tag_2_name
+            },
+            {
+              id: tag_1.id,
+              name: tag_1_name
+            }
+          ],
+          small_photo: nil,
+          large_photo: nil,
+        }
+      )
     end
   end
 end

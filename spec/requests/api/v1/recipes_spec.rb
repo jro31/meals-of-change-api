@@ -259,6 +259,119 @@ describe 'recipes API', type: :request do
           end
         end
       end
+
+      context 'bookmarked param is passed-in' do
+        let(:params) { "bookmarked=true" }
+        context 'user is logged-in' do
+          include_context 'login'
+          context 'bookmarked recipes exist' do
+            let!(:user_recipe_bookmark) { create(:user_recipe_bookmark, user: current_user, recipe: recipe_1) }
+            context 'one recipe' do
+              it 'returns the bookmarked recipe' do
+                get url
+
+                expect(response).to have_http_status(:ok)
+                expect(JSON.parse(response.body)).to eq({
+                  'recipes' => [
+                    {
+                      'id' => recipe_1.id,
+                      'author' => display_name_1,
+                      'name' => name_1,
+                      'time_minutes' => time_minutes_1,
+                      'small_photo' => photo_url
+                    }
+                  ],
+                  'filter_title' => 'Bookmarked recipes'
+                })
+              end
+            end
+
+            context 'two recipes' do
+              context 'bookmark 2 was created first' do
+                let!(:user_recipe_bookmark_2) { create(:user_recipe_bookmark, user: current_user, recipe: recipe_2, created_at: user_recipe_bookmark.created_at - 1.minute) }
+                it 'returns the bookmarked recipes ordered by move recently favourited' do
+                  get url
+
+                  expect(response).to have_http_status(:ok)
+                  expect(JSON.parse(response.body)).to eq({
+                    'recipes' => [
+                      {
+                        'id' => recipe_1.id,
+                        'author' => display_name_1,
+                        'name' => name_1,
+                        'time_minutes' => time_minutes_1,
+                        'small_photo' => photo_url
+                      },
+                      {
+                        'id' => recipe_2.id,
+                        'author' => display_name_2,
+                        'name' => name_2,
+                        'time_minutes' => time_minutes_2,
+                        'small_photo' => photo_url
+                      }
+                    ],
+                    'filter_title' => 'Bookmarked recipes'
+                  })
+                end
+              end
+
+              context 'bookmark 1 was created first' do
+                let!(:user_recipe_bookmark_2) { create(:user_recipe_bookmark, user: current_user, recipe: recipe_2, created_at: user_recipe_bookmark.created_at + 1.minute) }
+                it 'returns the bookmarked recipes ordered by move recently favourited' do
+                  get url
+
+                  expect(response).to have_http_status(:ok)
+                  expect(JSON.parse(response.body)).to eq({
+                    'recipes' => [
+                      {
+                        'id' => recipe_2.id,
+                        'author' => display_name_2,
+                        'name' => name_2,
+                        'time_minutes' => time_minutes_2,
+                        'small_photo' => photo_url
+                      },
+                      {
+                        'id' => recipe_1.id,
+                        'author' => display_name_1,
+                        'name' => name_1,
+                        'time_minutes' => time_minutes_1,
+                        'small_photo' => photo_url
+                      }
+                    ],
+                    'filter_title' => 'Bookmarked recipes'
+                  })
+                end
+              end
+            end
+          end
+
+          context 'bookmarked recipes do not exist' do
+            let(:imposter_user) { create(:user) }
+            let!(:user_recipe_bookmark) { create(:user_recipe_bookmark, user: imposter_user, recipe: recipe_1) }
+            it 'returns an empty array' do
+              get url
+
+              expect(response).to have_http_status(:ok)
+              expect(JSON.parse(response.body)).to eq({
+                'recipes' => [],
+                'filter_title' => 'Bookmarked recipes'
+              })
+            end
+          end
+        end
+
+        context 'user is not logged-in' do
+          it 'returns an empty array' do
+            get url
+
+            expect(response).to have_http_status(:ok)
+            expect(JSON.parse(response.body)).to eq({
+              'recipes' => [],
+              'filter_title' => 'Bookmarked recipes'
+            })
+          end
+        end
+      end
     end
 
     context 'no recipes exist' do
@@ -289,40 +402,42 @@ describe 'recipes API', type: :request do
         get url
 
         expect(response).to have_http_status(:ok)
-        expect(JSON.parse(response.body)).to eq({
-          'recipe' => {
-            'id' => recipe.id,
-            'user' => {
-              'id' => user.id,
-              'display_name' => user.display_name
-            },
-            'name' => recipe.name,
-            'time_minutes' => recipe.time_minutes,
-            'preface' => recipe.preface,
-            'ingredients' => [
-              {
-                'amount' => ingredient.amount,
-                'food' => ingredient.food,
-                'preparation' => ingredient.preparation,
-                'optional' => ingredient.optional
-              }
-            ],
-            'steps' => [
-              {
-                'position' => step.position,
-                'instructions' => step.instructions
-              }
-            ],
-            'tags' => [
-              {
-                'id' => tag.id,
-                'name' => tag.name
-              }
-            ],
-            'small_photo' => recipe.small_photo_url,
-            'large_photo' => recipe.large_photo_url,
+        expect(JSON.parse(response.body)).to eq(
+          {
+            'recipe' => {
+              'id' => recipe.id,
+              'user' => {
+                'id' => user.id,
+                'display_name' => user.display_name
+              },
+              'name' => recipe.name,
+              'time_minutes' => recipe.time_minutes,
+              'preface' => recipe.preface,
+              'ingredients' => [
+                {
+                  'amount' => ingredient.amount,
+                  'food' => ingredient.food,
+                  'preparation' => ingredient.preparation,
+                  'optional' => ingredient.optional
+                }
+              ],
+              'steps' => [
+                {
+                  'position' => step.position,
+                  'instructions' => step.instructions
+                }
+              ],
+              'tags' => [
+                {
+                  'id' => tag.id,
+                  'name' => tag.name
+                }
+              ],
+              'small_photo' => recipe.small_photo_url,
+              'large_photo' => recipe.large_photo_url
+            }
           }
-        })
+        )
       end
     end
 
@@ -359,16 +474,14 @@ describe 'recipes API', type: :request do
       allow_any_instance_of(Recipe).to receive(:large_photo_url).and_return(photo_url)
     end
     context 'user is logged-in' do
-      let(:email) { 'user@email.com' }
-      let(:password) { 'password' }
-      let!(:user) { create(:user, email: email, password: password) }
+      include_context 'login'
       let(:expected_return) {
         {
           'recipe' => {
             'id' => Recipe.last.id,
             'user' => {
-              'id' => user.id,
-              'display_name' => user.display_name
+              'id' => current_user.id,
+              'display_name' => current_user.display_name
             },
             'name' => name,
             'time_minutes' => time_minutes,
@@ -399,11 +512,10 @@ describe 'recipes API', type: :request do
             ],
             'tags' => expected_tag_return,
             'small_photo' => photo_url,
-            'large_photo' => photo_url,
+            'large_photo' => photo_url
           }
         }
       }
-      before { post '/api/v1/sessions', params: { user: { email: email, password: password } } }
       context 'recipe has no tags' do
         let(:expected_tag_return) { [] }
         it 'creates a new recipe' do

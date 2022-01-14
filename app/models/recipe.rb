@@ -6,6 +6,8 @@ class Recipe < ApplicationRecord
   has_many :steps, dependent: :destroy
   has_many :recipe_tags, dependent: :destroy
   has_many :tags, through: :recipe_tags
+  has_many :user_recipe_bookmarks, dependent: :destroy
+  has_many :bookmarked_users, through: :user_recipe_bookmarks, source: :user
 
   has_one_attached :small_photo
   has_one_attached :large_photo
@@ -31,7 +33,7 @@ class Recipe < ApplicationRecord
 
   def small_photo_url
     if small_photo.attached?
-      small_photo.blob.service_url
+      small_photo.blob.service_url # TODO - Can you update how long this URL is active for? Default is 5 mins. No reason it shouldn't be longer then that.
     end
   end
 
