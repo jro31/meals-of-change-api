@@ -9,6 +9,7 @@ module Api
       # GET /api/v1/recipes?user_id=1
       # GET /api/v1/recipes?tag_name=thai+food
       # GET /api/v1/recipes?query=garlic+bread
+      # GET /api/v1/recipes?bookmarked=true
       def index
         begin
           filter_recipes
@@ -99,6 +100,11 @@ module Api
                                          .limit(params[:limit])
                                          .offset(params[:offset])
           @filter_title = "\"#{params[:query]}\" recipes"
+        elsif params[:bookmarked]
+          @recipes = policy_scope(Recipe).joins(:user_recipe_bookmarks)
+                                         .where(user_recipe_bookmarks: { user: current_user })
+                                         .order('user_recipe_bookmarks.created_at desc')
+          @filter_title = 'Bookmarked recipes'
         else
           @recipes = policy_scope(Recipe).order(created_at: :desc)
                                          .limit(params[:limit])

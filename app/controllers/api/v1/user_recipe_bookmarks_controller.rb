@@ -58,6 +58,7 @@ module Api
             error_message: e.message
           }, status: :unauthorized
         rescue => e
+          @skip_after_action = true
           render json: {
             error_message: e.message
           }, status: :unprocessable_entity
