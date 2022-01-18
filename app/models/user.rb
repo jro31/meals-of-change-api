@@ -10,8 +10,8 @@ class User < ApplicationRecord
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, length: { minimum: 8 }
   validates :display_name, length: { minimum: 4, maximum: 20 }
-  # TODO - Validate twitter_handle is between 4 - 15 characters
-  # TODO - Validate twitter_handle is only A-Z, 0-9 and underscores (no spaces/dashes)
-  # TODO - Validate instagram_username is no more than 30 characters
-  # TODO - Validate instagram_username only contains letters, numbers, full-stops and underscores
+  validates :twitter_handle, length: { minimum: 4, maximum: 15 }, allow_nil: true
+  validates :twitter_handle, format: { with: /\A[\w]*\z/, message: 'only allows letters, numbers and underscores' }
+  validates :instagram_username, length: { minimum: 1, maximum: 30 }, allow_nil: true
+  validates :instagram_username, format: { with: /\A[\w.]*\z/, message: 'only allows letters, numbers, full stops and underscores' }
 end
