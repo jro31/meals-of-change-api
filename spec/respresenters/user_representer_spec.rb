@@ -10,7 +10,9 @@ describe UserRepresenter do
       expect(subject).to eq({
         id: user.id,
         email: email,
-        display_name: display_name
+        display_name: display_name,
+        twitter_handle: nil,
+        instagram_username: nil
       })
     end
 
@@ -19,7 +21,22 @@ describe UserRepresenter do
       it 'returns the correct hash' do
         expect(subject).to eq({
           id: user.id,
-          display_name: display_name
+          display_name: display_name,
+          twitter_handle: nil,
+          instagram_username: nil
+        })
+      end
+    end
+
+    context 'twitter_handle and instagram_username exist' do
+      let(:user) { create(:user, email: email, display_name: display_name, twitter_handle: 'mealsofchange', instagram_username: 'meals_of_change') }
+      it 'returns the correct hash' do
+        expect(subject).to eq({
+          id: user.id,
+          email: email,
+          display_name: display_name,
+          twitter_handle: 'mealsofchange',
+          instagram_username: 'meals_of_change'
         })
       end
     end

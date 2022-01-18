@@ -192,5 +192,287 @@ describe User, type: :model do
         end
       end
     end
+
+    describe 'twitter_handle' do
+      let(:twitter_handle) { 'mealsofchange' }
+      subject { build(:user, twitter_handle: twitter_handle) }
+      it { expect(subject).to be_valid }
+      describe 'validates length of twitter_handle' do
+        context 'twitter_handle is nil' do
+          let(:twitter_handle) { nil }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'twitter_handle is an empty string' do
+          let(:twitter_handle) { '' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:twitter_handle]).to include('is too short (minimum is 4 characters)')
+          end
+        end
+
+        context 'twitter_handle is three characters' do
+          let(:twitter_handle) { 'mea' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:twitter_handle]).to include('is too short (minimum is 4 characters)')
+          end
+        end
+
+        context 'twitter_handle is four characters' do
+          let(:twitter_handle) { 'meal' }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'twitter_handle is fifteen characters' do
+          let(:twitter_handle) { 'meals_of_change' }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'twitter_handle is sixteen characters' do
+          let(:twitter_handle) { 'meals_of_changes' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:twitter_handle]).to include('is too long (maximum is 15 characters)')
+          end
+        end
+      end
+
+      describe 'validates format of twitter_handle' do
+        context 'contains capital letters' do
+          let(:twitter_handle) { 'MealsOfChange' }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'contains lower-case letters' do
+          it { expect(subject).to be_valid }
+        end
+
+        context 'contains numbers' do
+          let(:twitter_handle) { 'm3a150fChan93' }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'contains underscores' do
+          let(:twitter_handle) { 'meals_of_change' }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'contains spaces' do
+          context 'at the beginning' do
+            let(:twitter_handle) { ' meals' }
+            it 'is invalid with the correct error' do
+              expect(subject).not_to be_valid
+              expect(subject.errors.messages[:twitter_handle]).to include('only allows letters, numbers and underscores')
+            end
+          end
+
+          context 'in the middle' do
+            let(:twitter_handle) { 'meals of change' }
+            it 'is invalid with the correct error' do
+              expect(subject).not_to be_valid
+              expect(subject.errors.messages[:twitter_handle]).to include('only allows letters, numbers and underscores')
+            end
+          end
+
+          context 'at the end' do
+            let(:twitter_handle) { 'meals ' }
+            it 'is invalid with the correct error' do
+              expect(subject).not_to be_valid
+              expect(subject.errors.messages[:twitter_handle]).to include('only allows letters, numbers and underscores')
+            end
+          end
+        end
+
+        context 'contains dashes' do
+          let(:twitter_handle) { 'meals-of-change' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:twitter_handle]).to include('only allows letters, numbers and underscores')
+          end
+        end
+
+        context 'contains full-stops' do
+          let(:twitter_handle) { 'meals.of' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:twitter_handle]).to include('only allows letters, numbers and underscores')
+          end
+        end
+
+        context 'contains @' do
+          let(:twitter_handle) { '@meals' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:twitter_handle]).to include('only allows letters, numbers and underscores')
+          end
+        end
+
+        context 'contains $' do
+          let(:twitter_handle) { 'meal$' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:twitter_handle]).to include('only allows letters, numbers and underscores')
+          end
+        end
+
+        context 'contains \'' do
+          let(:twitter_handle) { "meal's" }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:twitter_handle]).to include('only allows letters, numbers and underscores')
+          end
+        end
+
+        context 'contains "' do
+          let(:twitter_handle) { '"meals' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:twitter_handle]).to include('only allows letters, numbers and underscores')
+          end
+        end
+
+        context 'contains &' do
+          let(:twitter_handle) { 'meals&of' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:twitter_handle]).to include('only allows letters, numbers and underscores')
+          end
+        end
+      end
+    end
+
+    describe 'instagram_username' do
+      let(:instagram_username) { 'mealsofchange' }
+      subject { build(:user, instagram_username: instagram_username) }
+      it { expect(subject).to be_valid }
+      describe 'validates length of instagram_username' do
+        context 'instagram_username is nil' do
+          let(:instagram_username) { nil }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'instagram_username is an empty string' do
+          let(:instagram_username) { '' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:instagram_username]).to include('is too short (minimum is 1 character)')
+          end
+        end
+
+        context 'instagram_username is thirty characters' do
+          let(:instagram_username) { 'meals_of_changemeals_of_change' }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'instagram_username is thirty-one characters' do
+          let(:instagram_username) { 'meals_of_changemeals_of_changes' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:instagram_username]).to include('is too long (maximum is 30 characters)')
+          end
+        end
+      end
+
+      describe 'validates format of instagram_username' do
+        context 'contains capital letters' do
+          let(:instagram_username) { 'MealsOfChange' }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'contains lower-case letters' do
+          it { expect(subject).to be_valid }
+        end
+
+        context 'contains numbers' do
+          let(:instagram_username) { 'm3a150fChan93' }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'contains underscores' do
+          let(:instagram_username) { 'meals_of_change' }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'contains spaces' do
+          context 'at the beginning' do
+            let(:instagram_username) { ' meals' }
+            it 'is invalid with the correct error' do
+              expect(subject).not_to be_valid
+              expect(subject.errors.messages[:instagram_username]).to include('only allows letters, numbers, full stops and underscores')
+            end
+          end
+
+          context 'in the middle' do
+            let(:instagram_username) { 'meals of change' }
+            it 'is invalid with the correct error' do
+              expect(subject).not_to be_valid
+              expect(subject.errors.messages[:instagram_username]).to include('only allows letters, numbers, full stops and underscores')
+            end
+          end
+
+          context 'at the end' do
+            let(:instagram_username) { 'meals ' }
+            it 'is invalid with the correct error' do
+              expect(subject).not_to be_valid
+              expect(subject.errors.messages[:instagram_username]).to include('only allows letters, numbers, full stops and underscores')
+            end
+          end
+        end
+
+        context 'contains dashes' do
+          let(:instagram_username) { 'meals-of-change' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:instagram_username]).to include('only allows letters, numbers, full stops and underscores')
+          end
+        end
+
+        context 'contains full-stops' do
+          let(:instagram_username) { 'meals.of' }
+          it { expect(subject).to be_valid }
+        end
+
+        context 'contains @' do
+          let(:instagram_username) { '@meals' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:instagram_username]).to include('only allows letters, numbers, full stops and underscores')
+          end
+        end
+
+        context 'contains $' do
+          let(:instagram_username) { 'meal$' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:instagram_username]).to include('only allows letters, numbers, full stops and underscores')
+          end
+        end
+
+        context 'contains \'' do
+          let(:instagram_username) { "meal's" }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:instagram_username]).to include('only allows letters, numbers, full stops and underscores')
+          end
+        end
+
+        context 'contains "' do
+          let(:instagram_username) { '"meals' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:instagram_username]).to include('only allows letters, numbers, full stops and underscores')
+          end
+        end
+
+        context 'contains &' do
+          let(:instagram_username) { 'meals&of' }
+          it 'is invalid with the correct error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages[:instagram_username]).to include('only allows letters, numbers, full stops and underscores')
+          end
+        end
+      end
+    end
   end
 end

@@ -2,7 +2,9 @@ require 'rails_helper'
 
 describe RecipeRepresenter do
   let(:display_name) { 'MyDisplayName' }
-  let(:user) { create(:user, display_name: display_name) }
+  let(:twitter_handle) { 'mealsofchange' }
+  let(:instagram_username) { 'meals_of_change' }
+  let(:user) { create(:user, display_name: display_name, twitter_handle: twitter_handle, instagram_username: instagram_username) }
   let(:name) { 'Garlic bread' }
   let(:time_minutes) { 30 }
   let(:preface) { 'I was inspired by Peter Kay' }
@@ -35,7 +37,9 @@ describe RecipeRepresenter do
           id: recipe.id,
           user: {
             id: user.id,
-            display_name: display_name
+            display_name: display_name,
+            twitter_handle: twitter_handle,
+            instagram_username: instagram_username
           },
           name: name,
           time_minutes: time_minutes,
