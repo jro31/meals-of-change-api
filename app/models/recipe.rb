@@ -33,7 +33,7 @@ class Recipe < ApplicationRecord
 
   def small_photo_url
     if small_photo.attached?
-      small_photo.blob.service_url # TODO - Can you update how long this URL is active for? Default is 5 mins. No reason it shouldn't be longer then that.
+      small_photo.blob.service_url
     end
   end
 
