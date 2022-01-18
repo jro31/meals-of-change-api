@@ -4,6 +4,6 @@ class AccountPolicy < ApplicationPolicy
   end
 
   def update?
-    false
+    !!user && !!record && record == user
   end
 end
