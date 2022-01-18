@@ -8,7 +8,7 @@ class User < ApplicationRecord
   validates_presence_of :email, :display_name
   validates_uniqueness_of :email, :display_name
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :password, length: { minimum: 8 }
+  validates :password, length: { minimum: 8 }, if: :password_digest_changed?
   validates :display_name, length: { minimum: 4, maximum: 20 }
   validates :twitter_handle, length: { minimum: 4, maximum: 15 }, allow_nil: true
   validates :twitter_handle, format: { with: /\A[\w]*\z/, message: 'only allows letters, numbers and underscores' }

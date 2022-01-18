@@ -23,6 +23,9 @@ module Api
       # PATCH /api/v1/accounts/:id
       def update
         begin
+          raise 'Password confirmation not included' if params['user']['password'] && !params['user']['password_confirmation']
+          raise 'New password not included' if params['user']['password_confirmation'] && !params['user']['password']
+
           @user = User.find(params[:id])
                       .try(:authenticate, params['user']['existing_password'])
           authorize @user, policy_class: AccountPolicy
@@ -37,6 +40,7 @@ module Api
             error_message: 'Not authorized to update account'
           }, status: :unauthorized
         rescue => e
+          @skip_after_action = true
           render json: {
             error_message: e.message
           }, status: :unprocessable_entity
@@ -46,7 +50,7 @@ module Api
       private
 
       def user_params
-        params.require(:user).permit(:password, :password_confirmation, :display_name)
+        params.require(:user).permit(:password, :password_confirmation, :display_name, :twitter_handle, :instagram_username)
       end
     end
   end

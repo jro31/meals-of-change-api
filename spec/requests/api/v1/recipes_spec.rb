@@ -408,7 +408,9 @@ describe 'recipes API', type: :request do
               'id' => recipe.id,
               'user' => {
                 'id' => user.id,
-                'display_name' => user.display_name
+                'display_name' => user.display_name,
+                'twitter_handle' => user.twitter_handle,
+                'instagram_username' => user.instagram_username
               },
               'name' => recipe.name,
               'time_minutes' => recipe.time_minutes,
@@ -481,7 +483,9 @@ describe 'recipes API', type: :request do
             'id' => Recipe.last.id,
             'user' => {
               'id' => current_user.id,
-              'display_name' => current_user.display_name
+              'display_name' => current_user.display_name,
+              'twitter_handle' => current_user.twitter_handle,
+              'instagram_username' => current_user.instagram_username
             },
             'name' => name,
             'time_minutes' => time_minutes,
