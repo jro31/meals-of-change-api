@@ -6,12 +6,14 @@ describe 'recipes API', type: :request do
     let(:url) { "/api/v1/recipes?#{params}" }
     context 'recipes exist' do
       let(:display_name_1) { 'Dragon' }
-      let(:user_1) { create(:user, display_name: display_name_1) }
+      let(:twitter_handle_1) { 'fiery_monster' }
+      let(:user_1) { create(:user, display_name: display_name_1, twitter_handle: twitter_handle_1) }
       let(:name_1) { 'Garlic bread' }
       let(:time_minutes_1) { 30 }
       let!(:recipe_1) { create(:recipe, user: user_1, name: name_1, time_minutes: time_minutes_1) }
       let(:display_name_2) { 'Brutus' }
-      let(:user_2) { create(:user, display_name: display_name_2) }
+      let(:instagram_username_2) { 'brutus_selfies' }
+      let(:user_2) { create(:user, display_name: display_name_2, instagram_username: instagram_username_2) }
       let(:name_2) { 'Spaghetti' }
       let(:time_minutes_2) { 10 }
       let!(:recipe_2) { create(:recipe, user: user_2, name: name_2, time_minutes: time_minutes_2) }
@@ -26,6 +28,8 @@ describe 'recipes API', type: :request do
             {
               'id' => recipe_2.id,
               'author' => display_name_2,
+              'author_twitter_handle' => nil,
+              'author_instagram_username' => instagram_username_2,
               'name' => name_2,
               'time_minutes' => time_minutes_2,
               'small_photo' => photo_url
@@ -33,6 +37,8 @@ describe 'recipes API', type: :request do
             {
               'id' => recipe_1.id,
               'author' => display_name_1,
+              'author_twitter_handle' => twitter_handle_1,
+              'author_instagram_username' => nil,
               'name' => name_1,
               'time_minutes' => time_minutes_1,
               'small_photo' => photo_url
@@ -59,6 +65,8 @@ describe 'recipes API', type: :request do
               {
                 'id' => recipe_8.id,
                 'author' => recipe_8.user.display_name,
+                'author_twitter_handle' => nil,
+                'author_instagram_username' => nil,
                 'name' => recipe_8.name,
                 'time_minutes' => recipe_8.time_minutes,
                 'small_photo' => photo_url
@@ -66,6 +74,8 @@ describe 'recipes API', type: :request do
               {
                 'id' => recipe_7.id,
                 'author' => recipe_7.user.display_name,
+                'author_twitter_handle' => nil,
+                'author_instagram_username' => nil,
                 'name' => recipe_7.name,
                 'time_minutes' => recipe_7.time_minutes,
                 'small_photo' => photo_url
@@ -73,6 +83,8 @@ describe 'recipes API', type: :request do
               {
                 'id' => recipe_6.id,
                 'author' => recipe_6.user.display_name,
+                'author_twitter_handle' => nil,
+                'author_instagram_username' => nil,
                 'name' => recipe_6.name,
                 'time_minutes' => recipe_6.time_minutes,
                 'small_photo' => photo_url
@@ -93,6 +105,8 @@ describe 'recipes API', type: :request do
                 {
                   'id' => recipe_3.id,
                   'author' => recipe_3.user.display_name,
+                  'author_twitter_handle' => nil,
+                  'author_instagram_username' => nil,
                   'name' => recipe_3.name,
                   'time_minutes' => recipe_3.time_minutes,
                   'small_photo' => photo_url
@@ -100,6 +114,8 @@ describe 'recipes API', type: :request do
                 {
                   'id' => recipe_2.id,
                   'author' => display_name_2,
+                  'author_twitter_handle' => nil,
+                  'author_instagram_username' => instagram_username_2,
                   'name' => name_2,
                   'time_minutes' => time_minutes_2,
                   'small_photo' => photo_url
@@ -107,6 +123,8 @@ describe 'recipes API', type: :request do
                 {
                   'id' => recipe_1.id,
                   'author' => display_name_1,
+                  'author_twitter_handle' => twitter_handle_1,
+                  'author_instagram_username' => nil,
                   'name' => name_1,
                   'time_minutes' => time_minutes_1,
                   'small_photo' => photo_url
@@ -129,6 +147,8 @@ describe 'recipes API', type: :request do
               {
                 'id' => recipe_1.id,
                 'author' => display_name_1,
+                'author_twitter_handle' => twitter_handle_1,
+                'author_instagram_username' => nil,
                 'name' => name_1,
                 'time_minutes' => time_minutes_1,
                 'small_photo' => photo_url
@@ -164,6 +184,8 @@ describe 'recipes API', type: :request do
                 {
                   'id' => recipe_1.id,
                   'author' => display_name_1,
+                  'author_twitter_handle' => twitter_handle_1,
+                  'author_instagram_username' => nil,
                   'name' => name_1,
                   'time_minutes' => time_minutes_1,
                   'small_photo' => photo_url
@@ -201,6 +223,8 @@ describe 'recipes API', type: :request do
                 {
                   'id' => recipe_1.id,
                   'author' => display_name_1,
+                  'author_twitter_handle' => twitter_handle_1,
+                  'author_instagram_username' => nil,
                   'name' => name_1,
                   'time_minutes' => time_minutes_1,
                   'small_photo' => photo_url
@@ -235,6 +259,8 @@ describe 'recipes API', type: :request do
                 {
                   'id' => recipe_1.id,
                   'author' => display_name_1,
+                  'author_twitter_handle' => twitter_handle_1,
+                  'author_instagram_username' => nil,
                   'name' => name_1,
                   'time_minutes' => time_minutes_1,
                   'small_photo' => photo_url
@@ -276,6 +302,8 @@ describe 'recipes API', type: :request do
                     {
                       'id' => recipe_1.id,
                       'author' => display_name_1,
+                      'author_twitter_handle' => twitter_handle_1,
+                      'author_instagram_username' => nil,
                       'name' => name_1,
                       'time_minutes' => time_minutes_1,
                       'small_photo' => photo_url
@@ -298,6 +326,8 @@ describe 'recipes API', type: :request do
                       {
                         'id' => recipe_1.id,
                         'author' => display_name_1,
+                        'author_twitter_handle' => twitter_handle_1,
+                        'author_instagram_username' => nil,
                         'name' => name_1,
                         'time_minutes' => time_minutes_1,
                         'small_photo' => photo_url
@@ -305,6 +335,8 @@ describe 'recipes API', type: :request do
                       {
                         'id' => recipe_2.id,
                         'author' => display_name_2,
+                        'author_twitter_handle' => nil,
+                        'author_instagram_username' => instagram_username_2,
                         'name' => name_2,
                         'time_minutes' => time_minutes_2,
                         'small_photo' => photo_url
@@ -326,6 +358,8 @@ describe 'recipes API', type: :request do
                       {
                         'id' => recipe_2.id,
                         'author' => display_name_2,
+                        'author_twitter_handle' => nil,
+                        'author_instagram_username' => instagram_username_2,
                         'name' => name_2,
                         'time_minutes' => time_minutes_2,
                         'small_photo' => photo_url
@@ -333,6 +367,8 @@ describe 'recipes API', type: :request do
                       {
                         'id' => recipe_1.id,
                         'author' => display_name_1,
+                        'author_twitter_handle' => twitter_handle_1,
+                        'author_instagram_username' => nil,
                         'name' => name_1,
                         'time_minutes' => time_minutes_1,
                         'small_photo' => photo_url
