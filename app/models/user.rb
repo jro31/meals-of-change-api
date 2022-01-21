@@ -6,7 +6,7 @@ class User < ApplicationRecord
   has_many :bookmarked_recipes, through: :user_recipe_bookmarks, source: :recipe
 
   validates_presence_of :email, :display_name
-  validates_uniqueness_of :email, :display_name
+  validates_uniqueness_of :email, :display_name, case_sensitive: false
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, length: { minimum: 8 }, if: :password_digest_changed?
   validates :display_name, length: { minimum: 4, maximum: 20 }

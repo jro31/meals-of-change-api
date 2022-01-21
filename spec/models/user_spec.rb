@@ -58,6 +58,14 @@ describe User, type: :model do
             expect(subject).not_to be_valid
             expect(subject.errors.messages[:email]).to include('has already been taken')
           end
+
+          context 'case insensitive' do
+            let(:other_user_email) { email.upcase }
+            it 'is invalid with the correct error' do
+              expect(subject).not_to be_valid
+              expect(subject.errors.messages[:email]).to include('has already been taken')
+            end
+          end
         end
       end
 
@@ -160,6 +168,14 @@ describe User, type: :model do
           it 'is invalid with the correct error' do
             expect(subject).not_to be_valid
             expect(subject.errors.messages[:display_name]).to include('has already been taken')
+          end
+
+          context 'case insensitive' do
+            let(:other_user_display_name) { display_name.upcase }
+            it 'is invalid with the correct error' do
+              expect(subject).not_to be_valid
+              expect(subject.errors.messages[:display_name]).to include('has already been taken')
+            end
           end
         end
       end
