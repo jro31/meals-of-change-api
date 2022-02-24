@@ -5,6 +5,8 @@ module Api
 
       def create
         begin
+          # TODO - Test if this is case-insensitive or not (for example, does 'J@j.j' work?)
+          # If not, lowercase the email in the params before trying to authenticate
           user = User.find_by(email: params['user']['email'])
                      .try(:authenticate, params['user']['password'])
 

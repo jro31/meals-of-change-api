@@ -14,4 +14,6 @@ class User < ApplicationRecord
   validates :twitter_handle, format: { with: /\A[\w]*\z/, message: 'only allows letters, numbers and underscores' }
   validates :instagram_username, length: { minimum: 1, maximum: 30 }, allow_nil: true
   validates :instagram_username, format: { with: /\A[\w.]*\z/, message: 'only allows letters, numbers, full stops and underscores' }
+
+  # TODO - Before validation, the email should be made all lowercase
 end

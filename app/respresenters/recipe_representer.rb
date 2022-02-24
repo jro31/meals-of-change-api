@@ -23,7 +23,7 @@ class RecipeRepresenter
   attr_reader :recipe
 
   def ingredients_array
-    recipe.ingredients.map { |ingredient| IngredientRepresenter.new(ingredient).as_json }
+    recipe.ingredients.order(:id).map { |ingredient| IngredientRepresenter.new(ingredient).as_json }
   end
 
   def steps_array
