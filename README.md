@@ -6,3 +6,5 @@ The Rails 6 API that manages the data for [mealsofchange.com](https://mealsofcha
 - RSpec
 
 Works in conjunction with [meals-of-change-front-end](https://github.com/jro31/meals-of-change-front-end).
+
+Take a deep-dive into how I built this app at [jethro.codes/projects/meals-of-change](https://jethro.codes/projects/meals-of-change).
